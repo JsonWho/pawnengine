@@ -1,53 +1,5 @@
 'use strict';
 
-var ApplicationConfiguration = (function() {
-
-var ApplicationModuleName = 'pawnengine';
-var ApplicationModuleDependencies = ['ngMaterial','ui.router'];
-
-var registerModule = function(moduleName, moduleDependencies) {
-
-  angular.module(moduleName, moduleDependencies || []);
-
-  angular.module(ApplicationModuleName).requires.push(moduleName);
-}
-
-
-  return {
-
-    applicationModuleName : ApplicationModuleName,
-    applicationModuleDependencies : ApplicationModuleDependencies,
-    registerModule : registerModule
-  };
-
-
-})();
-
-
-
-
-
-'use strict';
-
-angular.module(ApplicationConfiguration.applicationModuleName, ApplicationConfiguration.applicationModuleDependencies);
-
-angular.element(document).ready(function() {
-
-	angular.bootstrap(document, [ApplicationConfiguration.applicationModuleName]);
-
-});
-ApplicationConfiguration.registerModule('header');
-ApplicationConfiguration.registerModule('home');
-'use strict';
-
-angular.module('header').controller('headerController',['$scope','$http', function($scope, $http) {
-
-var vm = this;
-
-}]);
-
-'use strict';
-
 angular.module('home').controller('homeController',['$scope','$http', function($scope, $http) {
 
 var vm = this;
@@ -170,28 +122,3 @@ $scope.splitToArr = function(c) {
 
 
 }]);
-angular.module('home').config(function($stateProvider, $urlRouterProvider, $httpProvider) {
-
- 
-  // For any unmatched url, redirect to /state1
-  $urlRouterProvider.otherwise("/");
-  //
-  $stateProvider
-
-  .state('root', {
-  	url: "/",
-  	views: {
-  		'root': {templateUrl: "/mainapp/primary.view.html" },
-  		'header@root': { templateUrl: "/mainapp/header.view.html" },
-  		'content@root': { templateUrl: "/mainapp/home.view.html" }
-  	},
-  	params: {
-  		headerTitle: 'Just sell it!'
-  	},
-	      // controller: 'rootCtrl'
-
-	  })
-
-});
-
-//# sourceMappingURL=app.js.map

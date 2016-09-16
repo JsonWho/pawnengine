@@ -1,0 +1,58 @@
+<div ng-controller="homeController as hc">
+
+<md-content layout-padding>
+
+<div class="container" ng-repeat="con in hc.template.containers">
+	
+	<h5>{{con.title}}</h5>
+
+		<div class="container" ng-repeat="cc in con.child_containers">
+		<h5>{{cc.title}}</h5>
+
+			<div ng-repeat="opt in cc.options">
+
+				<md-input-container ng-if="opt.type == 'textinput'">
+					<input type="text" value="how dee do"/>
+				</md-input-container>
+
+			    <md-radio-group ng-model="opt.value" ng-if="opt.type == 'radiogroup'">
+
+			      <md-radio-button ng-repeat="ov in opt.option_values" value="{{ov.value}}" class="md-primary">{{ov.text}}</md-radio-button>
+
+			     </md-radio-group>
+
+		    </div>
+
+
+
+		    <div class="container" ng-init="cn = splitToArr(c)" ng-show="cc.options[cn.index].value == cn.optval" ng-repeat="c in cc.child_containers">
+
+			<h5>{{c.title}}</h5>
+
+			<div ng-repeat="opt in c.options">
+
+		        <md-input-container ng-if="opt.type == 'select' ">
+		          <md-select ng-model="opt.value">
+		            <md-option ng-repeat="ov in opt.option_values" ng-value="ov.value">
+		              {{ov.text}}
+		            </md-option>
+		          </md-select>
+		        </md-input-container>
+
+		    </div>
+
+			</div>
+
+
+
+		</div>
+	
+
+
+
+</div>
+
+
+</md-content>
+
+</div>
