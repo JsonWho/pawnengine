@@ -36,7 +36,7 @@ elixir(function(mix) {
 
 
 	mix.scripts(['libs/angular.js','libs/angular-animate.js','libs/angular-aria.js','libs/angular-messages.js','libs/angular-material.js','libs/angular-ui-router.js'], 'public/js/libs/framework.js')
-	.scriptsIn(['./resources/assets/mainapp/','public/js/app.js')
+	.scriptsIn('./resources/assets/mainapp/','public/js/app.js')
 	.styles(['libs/angular-material.css'],'public/css/libs/angular-material.css');
 
 });

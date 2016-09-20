@@ -2,30 +2,71 @@
 
 <md-content layout-padding>
 
-<div class="container" ng-repeat="con in hc.template.containers">
+
+<form name="hc.tForm">
+
+<div class="container" layout-gt-xs="row" layout-align="start space-around" ng-repeat="con in hc.template.containers">
 	
 	<h5>{{con.title}}</h5>
 
-		<div class="container" ng-repeat="cc in con.child_containers">
+		<div class="container" flex="auto" ng-repeat="cc in con.child_containers" ng-init="co = splitToArr(cc)" ng-show="!co ? true : checkEquality(co,cc)">
+
 		<h5>{{cc.title}}</h5>
 
 			<div ng-repeat="opt in cc.options">
 
 				<md-input-container ng-if="opt.type == 'textinput'">
-					<input type="text" value="how dee do"/>
+					<input ng-required="cc.disabled ? '' : 'required' " ng-disabled="cc.disabled" type="text" ng-model="opt.value" placeholder="{{opt.placeholder}}"/>
 				</md-input-container>
 
-			    <md-radio-group ng-model="opt.value" ng-if="opt.type == 'radiogroup'">
 
+				  <md-checkbox ng-required="cc.disabled ? '' : opt.required " ng-model="opt.value" ng-disabled="cc.disabled" ng-if="opt.type == 'checkbox'" aria-label="{{opt.text}}">
+		             {{ opt.text }}
+		          </md-checkbox>
+
+
+			    <md-radio-group ng-disabled="cc.disabled" ng-model="opt.value" ng-if="opt.type == 'radiogroup'">
 			      <md-radio-button ng-repeat="ov in opt.option_values" value="{{ov.value}}" class="md-primary">{{ov.text}}</md-radio-button>
-
 			     </md-radio-group>
+
+
+			    <md-input-container ng-if="opt.type == 'select'">
+		          <md-select ng-disabled="cc.disabled" ng-model="opt.value">
+		            <md-option ng-repeat="ov in opt.option_values" ng-value="ov.value">
+		              {{ov.text}}
+		            </md-option>
+		          </md-select>
+		        </md-input-container>
+
+
+			  <md-input-container ng-if="opt.type == 'multiselect'">
+			        <label>{{opt.text}}</label>
+			        <md-select ng-model="opt.value"
+			                   
+			                   multiple>
+<!-- 			          <md-select-header class="demo-select-header">
+			            <input ng-model="searchTerm"
+			                   type="search"
+			                   placeholder="Search for a vegetable.."
+			                   class="demo-header-searchbox md-text">
+			          </md-select-header>
+ -->			          <md-optgroup label="stuff">
+			            <md-option ng-value="ov.value" ng-repeat="ov in opt.option_values">{{ov.text}}</md-option>
+			          </md-optgroup>
+			        </md-select>
+			      </md-input-container>
+
 
 		    </div>
 
+		</div>
 
 
-		    <div class="container" ng-init="cn = splitToArr(c)" ng-show="cc.options[cn.index].value == cn.optval" ng-repeat="c in cc.child_containers">
+
+
+<!-- 
+
+		    <div class="container" ng-init="co = splitToArr(cc)" ng-show="checkCondition(co)" ng-repeat="cc in con.child_containers">
 
 			<h5>{{c.title}}</h5>
 
@@ -42,16 +83,19 @@
 		    </div>
 
 			</div>
-
-
-
-		</div>
+ -->
 	
 
 
 
 </div>
 
+
+<div>
+  <md-button type="submit" ng-click="submitTemplate()">Submit</md-button>
+</div>
+
+</form>
 
 </md-content>
 
