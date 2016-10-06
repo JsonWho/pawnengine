@@ -1,0 +1,42 @@
+
+// Fonts
+@import url(https://fonts.googleapis.com/css?family=Raleway:300,400,600);
+
+// Variables
+@import "variables";
+
+
+.container {
+	
+	.tip {
+
+		margin-left: 8px;
+		font-size: 11px;
+
+		label {
+
+			font-weight:400;
+		}
+
+		a {
+				z-index:1000;
+		}
+
+		&:hover {
+
+		cursor: pointer;
+
+		}
+	}
+
+		md-input-container + .tip {
+			margin-top: -38px;
+			position: absolute;
+		}
+
+		md-radio-group + .tip {
+			margin-top: -10px;
+		}
+}
+
+

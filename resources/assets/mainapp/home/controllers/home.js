@@ -27,7 +27,7 @@ $scope.splitToArr = function(c) {
 
 	    }
 		
-		co.targetContainer = eval('vm.template.containers' + co.cindex);
+		co.targetContainer = eval('vm.template.option_sections' + co.cindex);
 		co.targetOption = co.targetContainer.options[co.optidx];
 
 
@@ -60,6 +60,11 @@ $scope.submitTemplate = function() {
  			id:0,
  			title:'Macbook Pro',
 
+            option_sections: [
+            {
+            	id:0,
+            	title: 'Section 1',
+            	posiiton: 1,
 
 
 			containers: [
@@ -84,7 +89,7 @@ $scope.submitTemplate = function() {
 
 									{
 										id:4, type:'multiselect', text:'select many options',  group:'checkgrp', value: null,
-										option_values: [{id:4, text:'check op 1', value: 4 }, {id:5, text:'check op 2', value: 5},{id:6, text:'check op 3', value: 6 }]
+										option_values: [{id:4, text:'check op 1', value: 4 }, {id:5, text:'check op 2', value: 5},{id:6, text:'check op 3', value: 6 },{id:7, text:'check op 7 testing long text', value: 7 },{id:8, text:'check op 88888', value: 8 }]
 									},
 
 									{
@@ -105,7 +110,7 @@ $scope.submitTemplate = function() {
 						id: 2,
 						title: 'Rate the condition',
 								  //container position,option position within container, operator, option_value_id, behavior
-						condition:'[0].child_containers[0],2,>==,4|6,show;[0].child_containers[0],0,=,1,show;[0].child_containers[0],3,=,true,show',
+						condition:'[0].containers[0].child_containers[0],2,>==,4|8|7,show;[0].containers[0].child_containers[0],0,=,1,show;[0].containers[0].child_containers[0],3,=,true,show',
 						options:[
 
 									{
@@ -118,15 +123,41 @@ $scope.submitTemplate = function() {
 										id:3, type:'textinput', text:'select an option',  group: null, value: null, placeholder:'put more text here'
 									}
 							]
-					},
+					}
 
 
 
-					{
 
+
+
+
+
+
+
+
+				]
+			},
+
+		]
+
+	},
+
+
+    {
+
+       id:1,
+       title:'Section Two',
+       containers: [
+
+
+       					{
+						id: 3,
+
+
+					  child_containers: [{
 						id: 3,
 						title: '3rd container',
-						condition:'[0].child_containers[1],1,=,hello,show',
+						condition:'[0].containers[0].child_containers[1],1,=,hello,show',
 
 											options:[
 		
@@ -151,19 +182,17 @@ $scope.submitTemplate = function() {
 
 
 
-					}
+					}]
+
+				}
 
 
+       ]
 
 
+    }
 
-
-
-				]
-			}
-		]
-
-
+]
 
 
 

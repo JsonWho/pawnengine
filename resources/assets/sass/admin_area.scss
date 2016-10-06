@@ -1,0 +1,98 @@
+
+// Fonts
+@import url(https://fonts.googleapis.com/css?family=Raleway:300,400,600);
+
+// Variables
+@import "variables";
+
+%template_button_syle {
+
+    text-transform: none;
+	font-weight: 600;
+	background: white;
+}
+
+.section {
+	border: 1px solid blue;
+	padding: 2.8%;
+	padding-top: 0px;
+	padding-bottom: 0px;
+
+	& > h5 {
+		background: #afdaff;
+		padding: 3px;
+		margin-left: -2.9%;
+		margin-right: -2.9%;
+		margin-top:0px;
+	}
+
+	& > .md-button {
+	 @extend %template_button_syle;
+	}
+}
+
+
+
+.container {
+
+
+	border-left: 1px solid green;
+	border-bottom: 1px solid green;
+
+	& > .md-button {
+
+		@extend %template_button_syle;
+	}
+
+	& .container {
+
+		border-left: 1px solid purple;
+		border-bottom: 1px solid purple;
+		margin-left: 5px;
+		margin-bottom: 3%;
+		padding-left: 5px;
+	}
+
+
+	.cinput {
+
+	border: 1px solid transparent;
+
+	&:hover {
+		border: 1px solid #ebebeb;
+	}
+
+	}
+	
+	.tip {
+
+		margin-left: 8px;
+		font-size: 11px;
+
+		label {
+
+			font-weight:400;
+		}
+
+		a {
+				z-index:1000;
+		}
+
+		&:hover {
+
+		cursor: pointer;
+
+		}
+	}
+
+		md-input-container + .tip {
+			margin-top: -38px;
+			position: absolute;
+		}
+
+		md-radio-group + .tip {
+			margin-top: -10px;
+		}
+}
+
+

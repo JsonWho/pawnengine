@@ -1,0 +1,16 @@
+<md-dialog>
+	<md-dialog-content>
+	
+<p>Container ID : {{container.id}}</p>
+
+	        <md-input-container>
+          <label>Input type</label>
+          <md-select ng-model="addinput.type">
+            <md-option ng-repeat="input_type in input_types" ng-value="input_type">
+              {{input_type}}
+            </md-option>
+          </md-select>
+        </md-input-container>
+
+	</md-dialog-content>
+</md-dialog>

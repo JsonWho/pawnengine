@@ -12,7 +12,16 @@
 */
 
 Route::get('/', function () {
+
     return view('mainapp.index');
+
+});
+
+
+Route::get('adminarea', function () {
+
+    return view('admin.index');
+
 });
 
 

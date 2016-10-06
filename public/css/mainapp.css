@@ -23861,4 +23861,24 @@ md-tooltip {
   .hide-print:not(.show-print):not(.show) {
     display: none !important; } }
 
-/*# sourceMappingURL=angular-material.css.map */
+@import url(https://fonts.googleapis.com/css?family=Raleway:300,400,600);
+.container .tip {
+  margin-left: 8px;
+  font-size: 11px; }
+  .container .tip label {
+    font-weight: 400; }
+  .container .tip a {
+    z-index: 1000; }
+  .container .tip:hover {
+    cursor: pointer; }
+
+.container md-input-container + .tip {
+  margin-top: -38px;
+  position: absolute; }
+
+.container md-radio-group + .tip {
+  margin-top: -10px; }
+
+/*# sourceMappingURL=mainapp.css.map */
+
+/*# sourceMappingURL=mainapp.css.map */

@@ -1,0 +1,122 @@
+<div ng-controller="templateFormController as tmp">
+
+<md-content layout-padding>
+
+
+<form name="tmp.tForm">
+
+<div class="section" ng-show="tmp.sectionActive(section.count)" ng-init="inputs = []" ng-repeat="section in tmp.template.option_sections">
+
+	<h5>{{section.title}}</h5>
+
+
+<div class="container" layout="column" layout-align="start center" ng-repeat="con in section.containers">
+	
+
+	<div layout-gt-xs="row" style="width:100%;max-width:600px" layout-align="space-between start">
+
+		<div class="container" flex-gt-xs="50" ng-repeat="cc in con.child_containers" ng-show="!cc.conditions ? true : checkEquality(cc)">
+
+	        <h5>{{cc.title}}</h5>
+
+			<div ng-repeat="opt in cc.options" style="width:100%">
+
+				<md-input-container ng-if="opt.type == 'textinput'">
+					<input ng-init="input_name = (opt.type + '_' + opt.id); inputs.push(input_name)" name="{{input_name}}" ng-required="opt.disabled ? '' : opt.required " ng-disabled="opt.disabled" type="text" ng-model="opt.value" placeholder="{{opt.placeholder}}"/>
+				</md-input-container>
+
+<!-- 				can also use tmp.tForm[input_name].$inputDisabled for disabled check
+ -->
+
+				  <md-checkbox ng-init="input_name = (opt.type + '_' + opt.id); inputs.push(input_name)" name="{{input_name}}" ng-required="opt.disabled ? '' : opt.required " ng-model="opt.value" ng-disabled="opt.disabled" ng-if="opt.type == 'checkbox'" aria-label="{{opt.text}}">
+		             {{ opt.text }}
+		          </md-checkbox>
+
+
+			    <md-radio-group ng-init="input_name = (opt.type + '_' + opt.id); inputs.push(input_name)" name="{{input_name}}" ng-required="opt.disabled ? '' : opt.required "  ng-disabled="opt.disabled" ng-model="opt.value" ng-if="opt.type == 'radiogroup'">
+			      <md-radio-button ng-repeat="ov in opt.option_values" value="{{ov.value}}" class="md-primary">{{ov.text}}</md-radio-button>
+			     </md-radio-group>
+
+
+			    <md-input-container ng-if="opt.type == 'select'">
+		          <md-select ng-init="input_name = (opt.type + '_' + opt.id); inputs.push(input_name)" name="{{input_name}}" ng-required="opt.disabled ? '' : opt.required "  ng-disabled="opt.disabled" ng-model="opt.value">
+		            <md-option ng-repeat="ov in opt.option_values" ng-value="ov.value">
+		              {{ov.text}}
+		            </md-option>
+		          </md-select>
+		        </md-input-container>
+
+
+			  <md-input-container style="max-width:100%" ng-if="opt.type == 'multiselect'">
+			        <label>{{opt.text}}</label>
+			        <md-select ng-disabled="opt.disabled" ng-init="input_name = (opt.type + '_' + opt.id); inputs.push(input_name)" name="{{input_name}}" ng-required="opt.disabled ? '' : opt.required "  ng-model="opt.value"
+			                   
+			                   multiple>
+<!-- 			          <md-select-header class="demo-select-header">
+			            <input ng-model="searchTerm"
+			                   type="search"
+			                   placeholder="Search for a vegetable.."
+			                   class="demo-header-searchbox md-text">
+			          </md-select-header>
+ -->			          <md-optgroup label="stuff">
+			            <md-option ng-value="ov.value" ng-repeat="ov in opt.option_values">{{ov.text}}</md-option>
+			          </md-optgroup>
+			        </md-select>
+			      </md-input-container>
+
+			      <div class="tip" ng-if="opt.tip">
+			      <label>Help:</label>
+			      <a ng-click="tmp.showTipDialog($event,opt.tip)">{{opt.tip.label}}</a>
+			      </div>
+
+
+		    </div>
+
+		</div>
+
+
+
+
+<!-- 
+
+		    <div class="container" ng-init="co = splitToArr(cc)" ng-show="checkCondition(co)" ng-repeat="cc in con.child_containers">
+
+			<h5>{{c.title}}</h5>
+
+			<div ng-repeat="opt in c.options">
+
+		        <md-input-container ng-if="opt.type == 'select' ">
+		          <md-select ng-model="opt.value">
+		            <md-option ng-repeat="ov in opt.option_values" ng-value="ov.value">
+		              {{ov.text}}
+		            </md-option>
+		          </md-select>
+		        </md-input-container>
+
+		    </div>
+
+			</div>
+ -->
+	
+
+
+
+</div>
+
+</div>
+
+
+<div layout="row" layout-align="space-around">
+  <md-button ng-click="nextSection(section, inputs)">Next</md-button>
+
+    <md-button ng-if="tmp.active_section !== 1" ng-click="prevSection()">Prev</md-button>
+
+</div>
+
+</div>
+
+</form>
+
+</md-content>
+
+</div>
