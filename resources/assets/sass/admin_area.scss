@@ -39,6 +39,34 @@
 	border-left: 1px solid green;
 	border-bottom: 1px solid green;
 
+	.cinput {
+
+		position:relative;
+
+		.edit_button, .del_button {
+			cursor:pointer;
+			visibility:hidden;
+			right:0px;
+			z-index:1000;
+			position:absolute;
+		}
+
+		.del_button {
+			bottom:0px;
+		}
+
+		&:hover {
+
+			.edit_button, .del_button {
+				visibility: visible;
+
+				&:hover {
+				color:orange; 
+				}
+			}
+		}
+	}
+
 	& > .md-button {
 
 		@extend %template_button_syle;

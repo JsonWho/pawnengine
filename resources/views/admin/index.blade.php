@@ -14,7 +14,7 @@
     <body>
 
 
-<div ui-view="root">
+<div ui-view="root" ng-controller="rootController">
 </div>
 
 

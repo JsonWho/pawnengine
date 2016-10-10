@@ -23882,6 +23882,20 @@ md-tooltip {
 .container {
   border-left: 1px solid green;
   border-bottom: 1px solid green; }
+  .container .cinput {
+    position: relative; }
+    .container .cinput .edit_button, .container .cinput .del_button {
+      cursor: pointer;
+      visibility: hidden;
+      right: 0px;
+      z-index: 1000;
+      position: absolute; }
+    .container .cinput .del_button {
+      bottom: 0px; }
+    .container .cinput:hover .edit_button, .container .cinput:hover .del_button {
+      visibility: visible; }
+      .container .cinput:hover .edit_button:hover, .container .cinput:hover .del_button:hover {
+        color: orange; }
   .container .container {
     border-left: 1px solid purple;
     border-bottom: 1px solid purple;

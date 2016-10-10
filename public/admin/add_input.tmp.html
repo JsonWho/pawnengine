@@ -1,16 +1,96 @@
 <md-dialog>
 	<md-dialog-content>
-	
+
 <p>Container ID : {{container.id}}</p>
 
-	        <md-input-container>
+
+  <form name="new_input_form" novalidate>
+
+	    <md-input-container>
           <label>Input type</label>
-          <md-select ng-model="addinput.type">
-            <md-option ng-repeat="input_type in input_types" ng-value="input_type">
-              {{input_type}}
+          <md-select ng-model="newinput.type">
+            <md-option ng-repeat="input_type in input_types" ng-value="input_type.name">
+              {{input_type.dname}}
             </md-option>
           </md-select>
         </md-input-container>
+
+        <!-- checkbox -->
+        <div ng-if="newinput.type == 'checkbox' " layout="column" layout-align="center start" >
+		      
+           <md-input-container>
+		        <label>Checkbox text</label>
+		        <input name="checkboxtext" required ng-model="newinput.text">
+          <div ng-messages="new_input_form.checkboxtext.$error">
+          <div ng-message="required">This is required.</div>
+          </div>
+		      </md-input-container>
+
+
+        <md-radio-group ng-model="newinput.value">
+          <label>Checkbox selected ?</label>
+          <md-radio-button value="true" class="md-primary">True</md-radio-button>
+        </md-radio-group>
+
+        </div>
+
+
+        <!-- select list -->
+        <div ng-if="newinput.type == 'select' " layout="column" layout-align="center start" >
+          
+           <md-input-container>
+            <label>Input title</label>
+            <input name="input_title" required ng-model="newinput.text">
+<!--           <div ng-messages="new_input_form.checkboxtext.$error">
+          <div ng-message="required">This is required.</div>
+          </div>
+ -->          </md-input-container>
+
+
+           <md-input-container>
+            <label>Option placeholder</label>
+            <input name="input_placeholder" required ng-model="input.placeholder">
+          </md-input-container>
+
+
+          <md-input-container>
+                      <md-select ng-model="newinput.selected_option">
+                        <md-option ng-value="newinput.value" ng-repeat="op in newinput.options">
+                        {{op.text}}
+                        </md-option>
+                      </md-select>
+          </md-input-container>
+
+
+<br>
+
+
+          <md-input-container>
+            <label>Option text</label>
+            <input name="option_text" required ng-model="option.text">
+          </md-input-container>
+
+          <md-input-container>
+            <label>Option value</label>
+            <input name="option_value" required ng-model="option.value">
+          </md-input-container>
+
+        <md-button type="submit" ng-click="newinput.options.push(option); option={}" class="md-raised">
+          Add Option
+        </md-button>
+
+
+
+        </div>
+
+
+
+        <md-button type="submit" ng-click="addInput(newinput)" class="md-raised md-primary">
+          Add
+        </md-button>
+
+                </form>
+
 
 	</md-dialog-content>
 </md-dialog>

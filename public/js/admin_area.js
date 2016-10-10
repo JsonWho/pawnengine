@@ -50,10 +50,27 @@ var vm = this;
 
 'use strict';
 
-angular.module('home').controller('homeController',['$scope','$http', function($scope, $http) {
+angular.module('pawnengine_admin').controller('rootController',['$scope','$http','$mdDialog', function($scope, $http, $mdDialog) {
+
+var vm = this;
+
+  $scope.showConfirm = function(ev, title) {
+    // Appending dialog to document.body to cover sidenav in docs app
+    var confirm = $mdDialog.confirm()
+          .title(title)
+          .ariaLabel('Delete Input')
+          .targetEvent(ev)
+          .ok('OK')
+          .cancel('Cancel');
+
+    return $mdDialog.show(confirm);
+
+}
+
 
 
 }]);
+
 angular.module('home').config(function($stateProvider, $urlRouterProvider, $httpProvider) {
 
  
@@ -78,6 +95,12 @@ angular.module('home').config(function($stateProvider, $urlRouterProvider, $http
 
 });
 
+'use strict';
+
+angular.module('home').controller('homeController',['$scope','$http', function($scope, $http) {
+
+
+}]);
 angular.module('template_editor').config(function($stateProvider, $urlRouterProvider, $httpProvider) {
 
  
@@ -117,7 +140,6 @@ vm.sectionActive = function(count) {
 }
 
 
-
 vm.showTipDialog = function(ev,tip) {
 
 	$mdDialog.show({
@@ -134,17 +156,28 @@ vm.showTipDialog = function(ev,tip) {
 }
 
 
-vm.addInput = function(ev, cc) {
+vm.addEditInput = function(ev, cc, input) {
 
 	$mdDialog.show({
       controller: addInputDialogController,
       templateUrl: 'admin/add_input.tmp.html',
       parent: angular.element(document.body),
       targetEvent: ev,
-      locals: {container:cc},
+      locals: {container:cc, input: input},
       clickOutsideToClose:true,
       fullscreen: false // Only for -xs, -sm breakpoints.
     });
+}
+
+vm.delInput = function($event, cc, $index) {
+
+	var promise = $scope.showConfirm($event, 'Delete this input ?');
+
+	promise.then(function() {
+
+			cc.inputs.splice($index,1);
+
+	}, function() {});
 
 }
 
@@ -194,7 +227,7 @@ $scope.prevSection = function() {
  			id:0,
  			title:'Macbook Pro',
 
-            option_sections: [
+            sections: [
             {
             	id:0,
             	title: 'Section 1',
@@ -210,10 +243,10 @@ $scope.prevSection = function() {
 					{
 						id: 1,
 						title: 'Is your item new or used ?',
-						options:[
+						inputs:[
 									{
 										id:0, type:'radiogroup', text:'select an option', errormsg: '{required:"this input is required"}',  group:'itemcon', value: null, required: true, tip: { label:'Do you need help ?', heading: 'MaBook Serial location', text: 'The serial can be found on the underside of the notebook.', image:'someimage.png' },
-										option_values: [{id:0, text:'item is new', value: 0 }, {id:1, text:'item is used', value: 1}]
+										options: [{id:0, text:'item is new', value: 0 }, {id:1, text:'item is used', value: 1}]
 									},
 
 									{
@@ -222,8 +255,8 @@ $scope.prevSection = function() {
 									},
 
 									{
-										id:4, type:'multiselect', text:'select many options',  group:'checkgrp', value: null, required: true,
-										option_values: [{id:4, text:'check op 1', value: 4 }, {id:5, text:'check op 2', value: 5},{id:6, text:'check op 3', value: 6 },{id:7, text:'check op 7 testing long text', value: 7 },{id:8, text:'check op 88888', value: 8 }]
+										id:4, type:'multiselect', text:'select many inputs',  group:'checkgrp', value: null, required: true,
+										options: [{id:4, text:'check op 1', value: 4 }, {id:5, text:'check op 2', value: 5},{id:6, text:'check op 3', value: 6 },{id:7, text:'check op 7 testing long text', value: 7 },{id:8, text:'check op 88888', value: 8 }]
 									},
 
 									{
@@ -264,11 +297,11 @@ $scope.prevSection = function() {
 
 								  //container position,option position within container, operator, option_value_id, behavior, container_id
 						// condition:'multiselect_4,>==,4|8|7,show,1;radiogroup_0,=,1,disable,1;checkbox_5,=,true,disable,1~>=2',
-						options:[
+						inputs:[
 
 									{
 										id:2, type:'select', text:'select an option',  group: null, value: null, required: true,
-										option_values: [{id:2, text:'poor', value: 2 }, {id:3, text:'good', value: 3}]
+										options: [{id:2, text:'poor', value: 2 }, {id:3, text:'good', value: 3}]
 									},
 
 
@@ -320,7 +353,7 @@ $scope.prevSection = function() {
 									  input_check_rule: '=='
 									},
 
-											options:[
+											inputs:[
 		
 									{
 										id:6, type:'checkbox', text:'a checkbox', value: null, required: true
@@ -358,7 +391,7 @@ $scope.prevSection = function() {
 
 
 
-	// option_sections: {
+	// sections: {
 
 	// 	title:'Section 1',
 	// 	containers: [
@@ -370,7 +403,7 @@ $scope.prevSection = function() {
 	// 				{
 	// 					id: 1,
 	// 					title: 'Is your item new or used ?',
-	// 					options:[
+	// 					inputs:[
 	// 								{id:0, type:'radio', text:'item is new',  group:'itemcon' value: true},
 	// 								{id:0, type:'radio', text:'item is used', group:'itemcon' value: false}
 	// 					]
@@ -394,22 +427,6 @@ $scope.prevSection = function() {
 
 	if(!cc.conditions) return true;
 
-
-	// var cindex = splitArr[0];
-
-	// var optidx = conArr[0];
-	// var operator = conArr[1];
-	// var option_value_id = conArr[2];
-	// var behavior = conArr[3];
-
-		// var targetContainer = eval('vm.template.containers' + co.cindex);
-		// var targetOption = targetContainer.options[co.optidx];
-
-
-
-
-
-		// if(co.targetContainer.disabled) return false;
 		var coArr = cc.conditions.target_input_conditions;
 		var inputRules = cc.conditions.input_check_rule;
 		var cIdentifier = 'container_'+cc.id+'_show';
@@ -448,11 +465,11 @@ $scope.prevSection = function() {
 		var co = coArr[i];
 
 		//the 'controller / target' input (in a different container!), the state or value of which decides whether the current condition (co) is satisfied
-		if(!co.targetOption) co.targetOption = vm.tForm[co.input_name];
+		if(!co.targetInput) co.targetInput = vm.tForm[co.input_name];
 
 		//if the 'controller' input is disabled, check if its parent container is hidden. If hidden, this sets displayContainer to false, even if this condition only has 'disable' specified.
 		//when 
-		if(co.targetOption.$inputDisabled) { 
+		if(co.targetInput.$inputDisabled) { 
 
 			var cIdentifier =  'container_'+co.container_id+'_show';
 			if(vm.tForm[cIdentifier] !== undefined && vm.tForm[cIdentifier] == false) {displayContainer = false;}
@@ -461,7 +478,7 @@ $scope.prevSection = function() {
 			falseCount++; continue; 
 		}
 
-		var val_id_input = co.targetOption.$modelValue;
+		var val_id_input = co.targetInput.$modelValue;
 		var check_type = co.input_value_check_rule;
 
 
@@ -540,11 +557,11 @@ $scope.prevSection = function() {
 
 	function toggleInputs(cc,val) {
 
-		for(var i = 0; i < cc.options.length; i++) {
+		for(var i = 0; i < cc.inputs.length; i++) {
 
-			var option = cc.options[i];
-			option.disabled = val;
-			var input_name = option.type + '_' + option.id;
+			var input = cc.inputs[i];
+			input.disabled = val;
+			var input_name = input.type + '_' + input.id;
 			if(vm.tForm[input_name]) vm.tForm[input_name].$inputDisabled = val;
 
 		}
@@ -582,7 +599,7 @@ $scope.prevSection = function() {
 
 			});
 	}
-
+ 
 
 	// getTemplate();
 
@@ -600,14 +617,38 @@ $scope.prevSection = function() {
 
 
 
-  	    function addInputDialogController($scope, $mdDialog, container) {
+  	    function addInputDialogController($scope, $mdDialog, container, input) {
 
   	        $scope.container = container;
-	  		$scope.input_types = ['radio group','checkbox','text box','select list','select checkbox list'];
+
+  	        if(input) { $scope.newinput  = input } else
+  	         { 
+  	         	$scope.newinput = { 
+  	         			type: 'checkbox' ,
+  	         			options: []
+  	         };
+
+  	          }
+
+	  		$scope.input_types = [{name:'radiogroup', dname: 'radio group'},{name:'checkbox', dname: 'Checkbox'},{name:'textinput', dname: 'Text'} ,{name:'select', dname: 'Select list'},{ name:'multiselect', dname: 'Muli-Select list'}];
 	  		
 		    $scope.cancel = function() {
 		      $mdDialog.cancel();
 		    };
+
+
+		    $scope.addInput = function(newinput) {
+
+				    		if($scope.new_input_form.$valid) {
+				    		container.inputs.push(newinput);
+				    		$scope.newinput = { type: 'checkbox' };
+				    		$scope.new_input_form.$setPristine(true);
+				    	    $scope.new_input_form.$setUntouched(true);
+
+				    	}
+		    }
+
+
 
   		}
 
