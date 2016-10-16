@@ -21,6 +21,8 @@
 
 			<div class="cinput" ng-repeat="inp in cc.inputs track by $index " style="width:100%">
 
+ 				<div class="position">{{inp.position=$index+1}}</div>
+
 				<div class="edit_button" ng-click="tmp.addEditInput($event, cc, inp)">edit</div>
 				<div class="del_button" ng-click="tmp.delInput($event, cc, $index)">del</div>
 

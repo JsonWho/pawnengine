@@ -91,11 +91,12 @@
 	}
 
 	}
-	
+
 	.tip {
 
 		margin-left: 8px;
 		font-size: 11px;
+		padding-bottom: 10px;
 
 		label {
 
@@ -111,6 +112,12 @@
 		cursor: pointer;
 
 		}
+	}
+
+	md-radio-group + .tip {
+
+		padding-bottom: 20px;
+
 	}
 
 		md-input-container + .tip {

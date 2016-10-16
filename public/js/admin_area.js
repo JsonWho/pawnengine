@@ -37,9 +37,9 @@ angular.element(document).ready(function() {
 
 });
 ApplicationConfiguration.registerModule('header');
-ApplicationConfiguration.registerModule('home');
 ApplicationConfiguration.registerModule('template_editor');
 
+ApplicationConfiguration.registerModule('home');
 'use strict';
 
 angular.module('header').controller('headerController',['$scope','$http', function($scope, $http) {
@@ -71,36 +71,6 @@ var vm = this;
 
 }]);
 
-angular.module('home').config(function($stateProvider, $urlRouterProvider, $httpProvider) {
-
- 
-  // For any unmatched url, redirect to /state1
-  $urlRouterProvider.otherwise("/");
-  //
-  $stateProvider
-
-  .state('root', {
-  	url: "/",
-  	views: {
-  		'root': {templateUrl: "/admin/primary.view.html" },
-  		'header@root': { templateUrl: "/admin/header.view.html" },
-  		'content@root': { templateUrl: "/admin/home.view.html" }
-  	},
-  	params: {
-  		headerTitle: 'Overview'
-  	},
-	      // controller: 'rootCtrl'
-
-	  })
-
-});
-
-'use strict';
-
-angular.module('home').controller('homeController',['$scope','$http', function($scope, $http) {
-
-
-}]);
 angular.module('template_editor').config(function($stateProvider, $urlRouterProvider, $httpProvider) {
 
  
@@ -617,37 +587,123 @@ $scope.prevSection = function() {
 
 
 
+  		   vm.initInputPosition = function(input, index) {
+
+		    		input.position = index + 1;
+		    		return input.position;
+		    }
+
+
+
   	    function addInputDialogController($scope, $mdDialog, container, input) {
 
   	        $scope.container = container;
 
-  	        if(input) { $scope.newinput  = input } else
-  	         { 
-  	         	$scope.newinput = { 
-  	         			type: 'checkbox' ,
-  	         			options: []
-  	         };
-
-  	          }
-
 	  		$scope.input_types = [{name:'radiogroup', dname: 'radio group'},{name:'checkbox', dname: 'Checkbox'},{name:'textinput', dname: 'Text'} ,{name:'select', dname: 'Select list'},{ name:'multiselect', dname: 'Muli-Select list'}];
+
+
+  	        $scope.initTemplate = function() {
+
+		  	         if(input && !$scope.newinput) {
+  	      				
+  	      				$scope.max_position = container.inputs.length;
+		  	         	$scope.newinput  = angular.copy(input);
+		  	         	$scope.isUpdate = true;
+
+		  	         } else if(!$scope.newinput) {
+
+		  	         			var position = container.inputs.length + 1;
+		  	         			$scope.max_position = container.inputs.length + 1;
+		  	         			$scope.total_inputs = $scope.total_inputs + 1;
+
+				  	         	$scope.newinput = { 
+				  	         			type: 'checkbox' ,
+				  	         			options: [],
+				  	         			value: null,
+				  	         			position: position
+				  	         };
+
+		  	          } else {
+
+		  	          	$scope.newinput.value = null;
+
+		  	          }
+
+		  	          $scope.active_option = $scope.active_option ? $scope.active_option : {};
+		  	          $scope.newinput.options = $scope.newinput.options ? $scope.newinput.options : [];
+
+  	        }
+
+
+  	        $scope.initTemplate();
+
 	  		
 		    $scope.cancel = function() {
 		      $mdDialog.cancel();
 		    };
 
 
-		    $scope.addInput = function(newinput) {
+		    $scope.addInput = function(newinput, update) {
 
 				    		if($scope.new_input_form.$valid) {
-				    		container.inputs.push(newinput);
-				    		$scope.newinput = { type: 'checkbox' };
-				    		$scope.new_input_form.$setPristine(true);
-				    	    $scope.new_input_form.$setUntouched(true);
+
+				    		 var input_type = $scope.newinput.type;
+				    	     var inputs_with_options = ['select','multiselect','radiogroup'];
+
+					    	if(!inputs_with_options.includes(input_type)) {
+
+					    		delete newinput.options;
+					    	}
+
+
+					    		if(!update) {
+					    		container.inputs.splice((newinput.position - 1), 0 , newinput);
+					    		$scope.newinput = { type: input_type  };
+					    		$scope.new_input_form.$setPristine(true);
+					    	    $scope.new_input_form.$setUntouched(true);
+
+
+					    	} else if(update) {
+
+					    		angular.copy($scope.newinput, input);
+
+					    	}
+
 
 				    	}
 		    }
 
+
+		    $scope.addOption = function(active_option) {
+
+		    	$scope.newinput.options.push(active_option);
+		    	$scope.active_option = {};
+
+		    }
+
+
+		    $scope.setOption = function(val) {
+
+		    	var option = $scope.newinput.options.find(function(opt) {
+		    		return opt.value == val;
+		    	});
+
+		    	$scope.active_option = option;
+		    }
+
+
+		    $scope.changePosition = function(newinput) {
+
+
+		    	var position = newinput.position - 1;
+
+		    	if(input && position <= container.inputs.length) {
+
+					    container.inputs.splice((input.position - 1), 1);
+					    container.inputs.splice(position, 0, input);
+					    input.position = (position + 1);
+		    	}
+		    }
 
 
   		}
@@ -662,4 +718,34 @@ $scope.prevSection = function() {
 
 
 
+angular.module('home').config(function($stateProvider, $urlRouterProvider, $httpProvider) {
+
+ 
+  // For any unmatched url, redirect to /state1
+  $urlRouterProvider.otherwise("/");
+  //
+  $stateProvider
+
+  .state('root', {
+  	url: "/",
+  	views: {
+  		'root': {templateUrl: "/admin/primary.view.html" },
+  		'header@root': { templateUrl: "/admin/header.view.html" },
+  		'content@root': { templateUrl: "/admin/home.view.html" }
+  	},
+  	params: {
+  		headerTitle: 'Overview'
+  	},
+	      // controller: 'rootCtrl'
+
+	  })
+
+});
+
+'use strict';
+
+angular.module('home').controller('homeController',['$scope','$http', function($scope, $http) {
+
+
+}]);
 //# sourceMappingURL=admin_area.js.map
