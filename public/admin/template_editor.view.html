@@ -13,13 +13,17 @@
 <div class="container" layout="column" layout-align="start center" ng-repeat="con in section.containers"> 
 	
 
-	<div layout-gt-xs="row" style="width:100%;max-width:600px" layout-align="space-between start">
 
-		<div class="container" flex-gt-xs="50" ng-repeat="cc in con.child_containers" ng-show="!cc.conditions ? true : checkEquality(cc)">
+
+
+			<recon layout-gt-xs="row" style="width:100%;max-width:600px" layout-align="space-between start" ctrl="tmp" inputs="inputs" containers="con.child_containers"></recon>
+
+
+<!-- 		<div class="container" flex-gt-xs="50" ng-repeat="cc in con.child_containers" ng-show="!cc.conditions ? true : tmp.checkEquality(cc)">
 
 	        <h5>{{cc.title}}</h5>
 
-			<div class="cinput" ng-repeat="inp in cc.inputs track by $index " style="width:100%">
+			<div class="cinput" ng-repeat="inp in cc.inputs" style="width:100%">
 
  				<div class="position">{{inp.position=$index+1}}</div>
 
@@ -31,8 +35,6 @@
 					<input ng-init="input_name = (inp.type + '_' + inp.id); inputs.push(input_name)" name="{{input_name}}" ng-required="inp.disabled ? '' : inp.required " ng-disabled="inp.disabled" type="text" ng-model="inp.value" placeholder="{{inp.placeholder}}"/>
 				</md-input-container>
 
-<!-- 				can also use tmp.tForm[input_name].$inputDisabled for disabled check
- -->
 
 				  <md-checkbox ng-init="input_name = (inp.type + '_' + inp.id); inputs.push(input_name);" name="{{input_name}}" ng-required="inp.disabled ? '' : inp.required " ng-model="inp.value"     ng-true-value="'true'"
                ng-disabled="inp.disabled" ng-if="inp.type == 'checkbox'" aria-label="{{inp.text}}">
@@ -75,14 +77,13 @@
 		    </div>
 
 		    		<md-button ng-click="tmp.addEditInput($event,cc)">+ input</md-button>
+		<md-button>+ container</md-button>
 
 
 		</div>
+ -->
 
 
-</div>
-
-		<md-button>+ container</md-button>
 
 
 </div>

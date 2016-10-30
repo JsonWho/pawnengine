@@ -1,5 +1,5 @@
 
-<md-dialog flex-xs="90" flex="50">
+<md-dialog style="width:90%;max-width:400px">
 
 
 
@@ -8,8 +8,9 @@
 <div class="md-toolbar-tools">
 
   <h2>
-    <span> {{isUpdate ? 'Update input' : 'Create new input'}}
-    </span>
+
+    {{isUpdate ? 'Update input' : 'Create new input'}}
+    
   </h2>
   <span flex></span>
 
@@ -34,43 +35,70 @@ X
 <!-- tab 1 -->
 
 <md-tab label="Input">
-<md-content class="md-padding">
+<md-content class="md-padding" layout="column">
 
 <!-- form start -->
 
 
-<p>Container ID : {{container.id}}</p>
+<!-- <p>Container ID : {{container.id}}</p>
+-->
+
+<div layout="row" layout-align="space-around start">
+
+ <md-input-container flex="80">
+ <label>Input type</label>
+ <md-select ng-model="newinput.type" ng-change="initTemplate()" >
+ <md-option ng-repeat="input_type in input_types" ng-value="input_type.name">
+ {{input_type.dname}}
+</md-option>
+</md-select>
+</md-input-container>
+
+<md-input-container flex="20">
+<label>Position</label>
+<input flex type="number" min="1" max="{{max_position}}" ng-change="changePosition(newinput)" ng-model="newinput.position" aria-label="red" aria-controls="red-slider">
+</md-input-container>
+
+</div>
 
 
 
 
+<div layout-xs="column" layout="row" layout-align-xs="start center" layout-align="space-around start">
 
-<form name="new_input_form" novalidate>
+
+  <div flex="50" flex-xs="100">
+    <form name="input_form" novalidate layout="column">
 
 
-      <md-input-container>
-      <label>Position</label>
-      <input flex type="number" min="1" max="{{max_position}}" ng-change="changePosition(newinput)" ng-model="newinput.position" aria-label="red" aria-controls="red-slider">
-    </md-input-container>
 
-    <md-input-container>
-    <label>Input type</label>
-    <md-select ng-model="newinput.type" ng-change="initTemplate()" >
-    <md-option ng-repeat="input_type in input_types" ng-value="input_type.name">
-    {{input_type.dname}}
-    </md-option>
-    </md-select>
-    </md-input-container>
 
-    <!-- checkbox -->
-    <div ng-if="newinput.type == 'checkbox' " layout="column" layout-align="center start" >
+          <md-input-container>
+          <label>Input title</label>
+          <input name="input_title" required ng-model="newinput.title">
+        </md-input-container>
 
-     <md-input-container>
-     <label>Checkbox text</label>
-     <input name="checkboxtext" required ng-model="newinput.text">
-     <div ng-messages="new_input_form.checkboxtext.$error">
-      <div ng-message="required">This is required.</div>
-    </div>
+
+        <!-- textbox -->
+        <div ng-if="newinput.type == 'text' " layout="column" layout-align="center start" >
+
+          <md-input-container>
+          <label>Option placeholder</label>
+          <input name="input_placeholder" required ng-model="newinput.placeholder">
+        </md-input-container>
+      </div>
+
+
+
+
+      <!-- checkbox -->
+      <div ng-if="newinput.type == 'checkbox' " layout="column" layout-align="center start" >
+       <md-input-container>
+       <label>Checkbox text</label>
+       <input name="checkboxtext" required ng-model="newinput.text">
+       <div ng-messages="new_input_form.checkboxtext.$error">
+        <div ng-message="required">This is required.</div>
+      </div>
     </md-input-container>
 
 
@@ -78,69 +106,195 @@ X
     <label>Checkbox selected ?</label>
     <md-radio-button value="true" class="md-primary">True</md-radio-button>
     </md-radio-group>
-
-    </div>
-
-
-    <!-- select list -->
-    <div ng-if="newinput.type == 'select' " layout="column" layout-align="center start" >
-
-     <md-input-container>
-     <label>Input title</label>
-     <input name="input_title" required ng-model="newinput.text">
-    <!--           <div ng-messages="new_input_form.checkboxtext.$error">
-              <div ng-message="required">This is required.</div>
-              </div>
-            -->          </md-input-container>
-
-
-            <md-input-container>
-            <label>Option placeholder</label>
-            <input name="input_placeholder" required ng-model="newinput.placeholder">
-          </md-input-container>
-
-
-          <md-input-container>
-          <md-select ng-change="setOption(newinput.value)" placeholder="{{newinput.placeholder}}" ng-model="newinput.value">
-          <md-option ng-model="op" ng-value="op.value" ng-repeat="op in newinput.options track by $index">
-          {{op.text}}
-        </md-option>
-      </md-select>
-    </md-input-container>
-
-
-    <br>
-
-
-    <md-input-container>
-    <label>Option text</label>
-    <input name="option_text" ng-model="active_option.text">
-    </md-input-container>
-
-    <md-input-container>
-    <label>Option value</label>
-    <input name="option_value" ng-model="active_option.value">
-    </md-input-container>
-
-    <md-button ng-click="addOption(active_option)" class="md-raised">
-    Add Option
-    </md-button>
-
-
-
     </div>
 
 
 
-    <md-button type="submit" ng-click="addInput(newinput,isUpdate)" class="md-raised md-primary">
-    {{isUpdate ? 'Update' : 'Add'}}
-    </md-button>
+
+
+
+
+
+<!-- select list -->
+<div ng-if="newinput.type == 'select' " layout="column" layout-align="start center" >
+
+  <md-input-container>
+  <label>Option placeholder</label>
+  <input name="input_placeholder" required ng-model="newinput.placeholder">
+</md-input-container>
+
+
+</div>
 
 </form>
+</div>
 
 
 <!-- form end -->
 
+
+<!-- option form -->
+
+<form novalidate name="option_form" flex="50" flex-xs="100">
+
+
+  <!-- Select -->
+
+  <div ng-if="newinput.type == 'select' || newinput.type == 'radiogroup' " layout="column">
+
+    <div layout="row" layout-align="center center">
+      <md-input-container flex="100" flex-xs="80">
+      <label>Option text</label>
+      <input required name="option_text" ng-model="active_option.text">
+
+      <md-button style="top:10px" type="submit" ng-click="addOption()" class="md-raised small_button">
+      Add
+    </md-button>
+
+    <md-button style="top:10px" ng-disabled="selectedOption ? false : true" type="submit" ng-click="updateOption()" class="md-raised small_button">
+    Update
+  </md-button>
+  </md-input-container>
+
+
+
+
+
+
+</div>
+
+
+<div layout="row" layout-align="center center" style="max-height:138px">
+
+  <md-input-container flex="100" flex-xs="80">
+  <md-select ng-change="setOption(newinput.value)" ng-init="setOption(newinput.value)" placeholder="{{newinput.placeholder}}" ng-model="newinput.value">
+  <md-option ng-value="op.value" ng-repeat="op in newinput.options">
+  <!--   Unfortunately ng-init does not set position every time html is recompiled, hence the heck below. -->
+  {{(op.position=$index+1) ? '': ''}}
+  {{op.text}}
+</md-option>
+
+<md-option md-option-empty>
+NONE
+</md-option>
+</md-select>
+
+<md-input-container style="max-width:45px">
+<input style="position:relative;bottom:4px;border: 1px solid #ebebeb;" type="number" min="1" max="{{newinput.options.length + 1}}" ng-change="changeOptionPosition(active_option)" ng-model="active_option.position" aria-label="red" aria-controls="red-slider">
+</md-input-container>
+
+
+<!--       <md-button type="submit" style="bottom:14px" ng-click="addOption(active_option)" class="md-raised small_button">
+      CLR
+      </md-button>
+    -->
+    <md-button style="bottom:14px" type="submit" ng-click="deleteOption()" class="md-raised small_button">
+    Del
+  </md-button>
+</md-input-container>
+
+</div>
+
+
+
+
+
+</div>
+
+
+
+
+<!-- Multi-Select -->
+
+
+
+<div ng-if="newinput.type == 'multiselect' " layout="column">
+
+  <div layout="row" layout-align="center center">
+    <md-input-container flex="100" flex-xs="80">
+    <label>Option text</label>
+    <input required name="option_text" ng-model="active_option.text">
+
+    <md-button style="top:10px" type="submit" ng-click="addOption()" class="md-raised small_button">
+    Add
+  </md-button>
+
+  <md-button style="top:10px" ng-disabled="selectedOption ? false : true" type="submit" ng-click="updateOption()" class="md-raised small_button">
+  Update
+</md-button>
+
+
+
+
+
+
+</div>
+
+
+<div layout="row" layout-align="center center" style="max-height:138px">
+
+  <md-input-container flex="100" flex-xs="80">
+  <md-select ng-change="setOption(current_value); optionSelected = checkIfSelected(selectedOption.value)" ng-init="setOption(current_value)" placeholder="{{newinput.placeholder}}" ng-model="current_value">
+  <md-option ng-value="op.value" ng-repeat="op in newinput.options">
+  <!--   Unfortunately ng-init does not set position every time html is recompiled, hence the heck below. -->
+  {{(op.position=$index+1) ? '': ''}}
+  {{op.text + ( checkIfSelected(op.value) ? '*' : '') }}
+</md-option>
+
+<md-option md-option-empty>
+NONE
+</md-option>
+</md-select>
+
+<md-input-container style="max-width:45px">
+<input style="position:relative;bottom:4px;border: 1px solid #ebebeb;" type="number" min="1" max="{{newinput.options.length + 1}}" ng-change="changeOptionPosition(active_option)" ng-model="active_option.position" aria-label="red" aria-controls="red-slider">
+</md-input-container>
+
+<!-- 
+      <md-button type="submit" style="bottom:14px" ng-click="toggleSelected()" class="md-raised small_button">
+      Check
+    </md-button> -->
+
+
+    <md-checkbox  style="bottom:14px" ng-change="toggleSelected(optionSelected)" ng-model="optionSelected" aria-label="selected">
+    Selected    
+  </md-checkbox>
+
+
+  <md-button style="bottom:14px" type="submit" ng-click="deleteOption()" class="md-raised small_button">
+  Del
+</md-button>
+</md-input-container>
+
+
+</md-input-container>
+
+
+</div>
+
+
+
+
+
+</div>
+
+
+
+
+
+
+</form>
+
+
+</div>
+
+
+<div layout="column" layout-align="start center">
+
+  <md-button type="submit" ng-click="addInput(newinput,isUpdate)" class="md-raised md-primary">
+  {{isUpdate ? 'Update' : 'Add'}}
+</md-button>
+</div>
 
 
 </md-content>
@@ -153,7 +307,13 @@ X
 <md-tab label="Conditions">
 <md-content class="md-padding">
 
-<h1>Tab 2</h1>
+<md-input-container>
+<md-select placeholder="Target" ng-model="target_input">
+<md-option ng-value="inp" ng-repeat="inp in getPreceding(newinput.position)">
+{{ '[' + ($index + 1) + '] '+ inp.type}}
+</md-option>
+</md-select>
+</md-input-container>
 
 </md-content>
 </md-tab>
@@ -162,13 +322,25 @@ X
 <!-- tab 3 -->
 
 
-<md-tab label="Other">
+<md-tab label="Otherfsdfsfsdsf">
 <md-content class="md-padding">
 
 <h1>Tab 3</h1>
 
 </md-content>
 </md-tab>
+
+<!-- tab 4 -->
+
+
+<!-- <md-tab label="Other2">
+<md-content class="md-padding">
+
+<h1>Tab 4</h1>
+
+</md-content>
+</md-tab>
+ -->
 
 
 </md-tabs>

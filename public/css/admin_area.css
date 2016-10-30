@@ -23865,7 +23865,10 @@ md-tooltip {
 .section > .md-button, .container > .md-button {
   text-transform: none;
   font-weight: 600;
-  background: white; }
+  background: white;
+  font-size: 12.5px;
+  min-width: 56px;
+  line-height: 25px; }
 
 .section {
   border: 1px solid blue;
@@ -23878,6 +23881,22 @@ md-tooltip {
     margin-left: -2.9%;
     margin-right: -2.9%;
     margin-top: 0px; }
+  @media (min-width: 600px) {
+    .section > .container > recon > .container {
+      -webkit-box-flex: 1;
+      flex: 1 1 50%;
+      max-width: 48.5%;
+      max-height: 50%;
+      box-sizing: border-box; } }
+
+recon {
+  width: 100%; }
+
+form .small_buttons .md-button, .md-button.small_button {
+  min-width: 38px;
+  line-height: 25px;
+  min-height: 24px;
+  max-height: 25px; }
 
 .container {
   border-left: 1px solid green;
@@ -23896,6 +23915,12 @@ md-tooltip {
       visibility: visible; }
       .container .cinput:hover .edit_button:hover, .container .cinput:hover .del_button:hover {
         color: orange; }
+    .container .cinput .position {
+      position: absolute;
+      top: 0;
+      left: -13px;
+      font-size: 12px;
+      color: #828181; }
   .container .container {
     border-left: 1px solid purple;
     border-bottom: 1px solid purple;
