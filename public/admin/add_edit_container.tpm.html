@@ -1,0 +1,91 @@
+
+<md-dialog style="width:90%;max-width:400px">
+
+
+
+
+<md-toolbar md-scroll-shrink>
+<div class="md-toolbar-tools">
+
+  <h2>
+
+    {{isUpdate ? 'Update input' : 'Create new input'}}
+    
+  </h2>
+  <span flex></span>
+
+  <md-button ng-click="cancel()" class="md-fab md-mini" aria-label="close">
+<!--           <md-icon md-svg-icon="img/icons/favorite.svg"></md-icon>
+-->        
+X
+</md-button>
+</div>
+</md-toolbar>
+
+
+
+
+
+<md-dialog-content>
+
+
+<md-tabs md-dynamic-height md-border-bottom>
+
+
+<!-- tab 1 -->
+
+<md-tab label="Input">
+<md-content class="md-padding" layout="column">
+
+
+
+
+
+
+</md-content>
+</md-tab>
+
+
+<!-- tab 3 -->
+
+
+<md-tab label="Otherfsdfsfsdsf">
+<md-content class="md-padding">
+
+<h1>Tab 3</h1>
+
+</md-content>
+</md-tab>
+
+<!-- tab 4 -->
+
+
+<!-- <md-tab label="Other2">
+<md-content class="md-padding">
+
+<h1>Tab 4</h1>
+
+</md-content>
+</md-tab>
+-->
+
+
+</md-tabs>
+
+</md-dialog-content>
+
+<md-dialog-actions layout="row" layout-align="center center">
+
+
+
+        <md-button type="submit" ng-click="addContainer(newinput,isUpdate)" class="md-raised md-primary">
+        {{isUpdate ? 'Update' : 'Add'}}
+        </md-button>
+        
+
+</md-dialog-actions>
+
+
+
+
+</md-dialog>

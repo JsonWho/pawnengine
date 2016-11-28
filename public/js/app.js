@@ -36,8 +36,8 @@ angular.element(document).ready(function() {
 	angular.bootstrap(document, [ApplicationConfiguration.applicationModuleName]);
 
 });
-ApplicationConfiguration.registerModule('header');
 ApplicationConfiguration.registerModule('home');
+ApplicationConfiguration.registerModule('header');
 ApplicationConfiguration.registerModule('sell');
 angular.module('home').config(function($stateProvider, $urlRouterProvider, $httpProvider) {
 
@@ -436,14 +436,6 @@ angular.module('sell').config(function($stateProvider, $urlRouterProvider, $http
 	  })
 
 });
-
-'use strict';
-
-angular.module('header').controller('headerController',['$scope','$http', function($scope, $http) {
-
-var vm = this;
-
-}]);
 
 'use strict';
 
@@ -940,5 +932,13 @@ $scope.prevSection = function() {
 
 
 
+
+'use strict';
+
+angular.module('header').controller('headerController',['$scope','$http', function($scope, $http) {
+
+var vm = this;
+
+}]);
 
 //# sourceMappingURL=app.js.map

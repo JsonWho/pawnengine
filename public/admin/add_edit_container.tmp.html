@@ -1,0 +1,98 @@
+
+<md-dialog style="width:90%;max-width:400px">
+
+
+
+
+<md-toolbar md-scroll-shrink>
+<div class="md-toolbar-tools">
+
+  <h2>
+
+    {{isUpdate ? 'Update Container' : 'Create new container'}}
+    
+  </h2>
+  <span flex></span>
+
+  <md-button ng-click="cancel()" class="md-fab md-mini" aria-label="close">
+<!--           <md-icon md-svg-icon="img/icons/favorite.svg"></md-icon>
+-->        
+X
+</md-button>
+</div>
+</md-toolbar>
+
+
+
+
+
+<md-dialog-content>
+
+
+<md-tabs md-dynamic-height md-border-bottom>
+
+
+<!-- tab 1 -->
+
+<md-tab label="General">
+<md-content class="md-padding" layout="column">
+
+
+<div layout="row" layout-align="space-around start">
+
+<!--  <md-input-container flex="80">
+ <label>Input type</label>
+ <md-select ng-model="newinput.type" ng-change="initTemplate()" >
+ <md-option ng-repeat="input_type in input_types" ng-value="input_type.name">
+ {{input_type.dname}}
+</md-option>
+</md-select>
+</md-input-container>
+ -->
+<md-input-container flex="20">
+<label>Position</label>
+<input flex type="number" min="1" max="{{max_position}}" ng-change="changePosition(con_temp)" ng-model="con_temp.position" aria-label="red" aria-controls="red-slider">
+</md-input-container>
+
+</div>
+
+
+
+
+
+
+</md-content>
+</md-tab>
+
+
+<!-- tab 3 -->
+
+
+<md-tab label="Conditions">
+<md-content class="md-padding">
+
+<h1>Conditions</h1>
+
+</md-content>
+</md-tab>
+
+
+</md-tabs>
+
+</md-dialog-content>
+
+<md-dialog-actions layout="row" layout-align="center center">
+
+
+
+        <md-button type="submit" ng-click="addContainer(newinput,isUpdate)" class="md-raised md-primary">
+        {{isUpdate ? 'Update' : 'Add'}}
+        </md-button>
+        
+
+</md-dialog-actions>
+
+
+
+
+</md-dialog>

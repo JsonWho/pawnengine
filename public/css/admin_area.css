@@ -23872,17 +23872,16 @@ md-tooltip {
 
 .section {
   border: 1px solid blue;
-  padding: 2.8%;
-  padding-top: 0px;
-  padding-bottom: 0px; }
+  padding: 0px; }
+  .section > div {
+    padding: 2.8%; }
   .section > h5 {
     background: #afdaff;
-    padding: 3px;
-    margin-left: -2.9%;
-    margin-right: -2.9%;
-    margin-top: 0px; }
+    margin-top: 0px;
+    width: 100%;
+    text-align: center; }
   @media (min-width: 600px) {
-    .section > .container > recon > .container {
+    .section > .containe > recon > .container {
       -webkit-box-flex: 1;
       flex: 1 1 50%;
       max-width: 48.5%;
@@ -23901,8 +23900,22 @@ form .small_buttons .md-button, .md-button.small_button {
 .container {
   border-left: 1px solid green;
   border-bottom: 1px solid green; }
+  .container > div .del_container, .container > div .edit_container {
+    visibility: hidden; }
+  .container:hover > div .del_container, .container:hover > div .edit_container {
+    visibility: visible; }
+  @media (max-width: 600px) {
+    .container + .container {
+      margin-top: 20px; } }
   .container .cinput {
     position: relative; }
+    .container .cinput .input_title {
+      margin-top: 10px;
+      margin-bottom: 15px;
+      font-size: 16px;
+      display: block;
+      font-weight: bold;
+      color: #828282; }
     .container .cinput .edit_button, .container .cinput .del_button {
       cursor: pointer;
       visibility: hidden;

@@ -67,46 +67,46 @@ X
 <div layout-xs="column" layout="row" layout-align-xs="start center" layout-align="space-around start">
 
 
-  <div flex="50" flex-xs="100">
-    <form name="input_form" novalidate layout="column">
+  <form name="input_form" novalidate layout="column">
+
+    <div flex="50" flex-xs="100">
 
 
 
-
-          <md-input-container>
-          <label>Input title</label>
-          <input name="input_title" required ng-model="newinput.title">
-        </md-input-container>
-
-
-        <!-- textbox -->
-        <div ng-if="newinput.type == 'text' " layout="column" layout-align="center start" >
-
-          <md-input-container>
-          <label>Option placeholder</label>
-          <input name="input_placeholder" required ng-model="newinput.placeholder">
-        </md-input-container>
-      </div>
-
-
-
-
-      <!-- checkbox -->
-      <div ng-if="newinput.type == 'checkbox' " layout="column" layout-align="center start" >
-       <md-input-container>
-       <label>Checkbox text</label>
-       <input name="checkboxtext" required ng-model="newinput.text">
-       <div ng-messages="new_input_form.checkboxtext.$error">
-        <div ng-message="required">This is required.</div>
-      </div>
+      <md-input-container>
+      <label>Input title</label>
+      <input name="input_title" required ng-model="newinput.title">
     </md-input-container>
 
 
-    <md-radio-group ng-model="newinput.value">
-    <label>Checkbox selected ?</label>
-    <md-radio-button value="true" class="md-primary">True</md-radio-button>
-    </md-radio-group>
-    </div>
+    <!-- textbox -->
+    <div ng-if="newinput.type == 'text' " layout="column" layout-align="center start" >
+
+      <md-input-container>
+      <label>Option placeholder</label>
+      <input name="input_placeholder" required ng-model="newinput.placeholder">
+    </md-input-container>
+  </div>
+
+
+
+
+  <!-- checkbox -->
+  <div ng-if="newinput.type == 'checkbox' " layout="column" layout-align="center start" >
+   <md-input-container>
+   <label>Checkbox text</label>
+   <input name="checkboxtext" required ng-model="newinput.text">
+   <div ng-messages="new_input_form.checkboxtext.$error">
+    <div ng-message="required">This is required.</div>
+  </div>
+</md-input-container>
+
+
+<md-radio-group ng-model="newinput.value">
+<label>Checkbox selected ?</label>
+<md-radio-button value="true" class="md-primary">True</md-radio-button>
+</md-radio-group>
+</div>
 
 
 
@@ -126,8 +126,49 @@ X
 
 </div>
 
-</form>
+
 </div>
+
+
+
+<!-- date input -->
+<div ng-if="newinput.type == 'date'" ng-init="tmp.createDateObject(newinput)" flex="100" layout="row" layout-align="start space-around" >
+
+
+  <div layout="column" flex="50">
+    <md-input-container>
+    <label>Date</label>
+    <md-datepicker ng-model="newinput.value" md-placeholder="Enter date"
+    ></md-datepicker>
+  </md-input-container>
+</div>
+
+<div layout="column" flex="50">
+
+  <md-input-container>
+  <label>Minimum date</label>
+  <md-datepicker ng-model="newinput.mindate" md-placeholder="Enter date"
+  ></md-datepicker>
+</md-input-container>
+
+
+<md-input-container>
+<label>Maximum date</label>
+<md-datepicker ng-model="newinput.maxdate" md-placeholder="Enter date"
+></md-datepicker>
+</md-input-container>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+</form>
 
 
 <!-- form end -->
@@ -154,7 +195,7 @@ X
     <md-button style="top:10px" ng-disabled="selectedOption ? false : true" type="submit" ng-click="updateOption()" class="md-raised small_button">
     Update
   </md-button>
-  </md-input-container>
+</md-input-container>
 
 
 
@@ -168,7 +209,7 @@ X
 
   <md-input-container flex="100" flex-xs="80">
   <md-select ng-change="setOption(newinput.value)" ng-init="setOption(newinput.value)" placeholder="{{newinput.placeholder}}" ng-model="newinput.value">
-  <md-option ng-value="op.value" ng-repeat="op in newinput.options">
+  <md-option ng-value="op" ng-repeat="op in newinput.options">
   <!--   Unfortunately ng-init does not set position every time html is recompiled, hence the heck below. -->
   {{(op.position=$index+1) ? '': ''}}
   {{op.text}}
@@ -234,11 +275,11 @@ NONE
 <div layout="row" layout-align="center center" style="max-height:138px">
 
   <md-input-container flex="100" flex-xs="80">
-  <md-select ng-change="setOption(current_value); optionSelected = checkIfSelected(selectedOption.value)" ng-init="setOption(current_value)" placeholder="{{newinput.placeholder}}" ng-model="current_value">
-  <md-option ng-value="op.value" ng-repeat="op in newinput.options">
+  <md-select ng-change="setOption(current_value); optionSelected = checkIfSelected(selectedOption)" ng-init="setOption(current_value)" placeholder="{{newinput.placeholder}}" ng-model="current_value">
+  <md-option ng-value="op" ng-repeat="op in newinput.options">
   <!--   Unfortunately ng-init does not set position every time html is recompiled, hence the heck below. -->
   {{(op.position=$index+1) ? '': ''}}
-  {{op.text + ( checkIfSelected(op.value) ? '*' : '') }}
+  {{op.text + ( checkIfSelected(op) ? '*' : '') }}
 </md-option>
 
 <md-option md-option-empty>
@@ -289,12 +330,6 @@ NONE
 </div>
 
 
-<div layout="column" layout-align="start center">
-
-  <md-button type="submit" ng-click="addInput(newinput,isUpdate)" class="md-raised md-primary">
-  {{isUpdate ? 'Update' : 'Add'}}
-</md-button>
-</div>
 
 
 </md-content>
@@ -304,16 +339,49 @@ NONE
 <!-- tab 2 -->
 
 
-<md-tab label="Conditions">
-<md-content class="md-padding">
+<md-tab label="Validation">
+<md-content class="md-padding" layout="row">
 
-<md-input-container>
+<!-- <md-input-container>
 <md-select placeholder="Target" ng-model="target_input">
 <md-option ng-value="inp" ng-repeat="inp in getPreceding(newinput.position)">
 {{ '[' + ($index + 1) + '] '+ inp.type}}
 </md-option>
 </md-select>
-</md-input-container>
+</md-input-container> -->
+
+
+<div layout="column" flex flex-gt-xs="40" layout-align-gt-xs="space-around">
+
+     <md-input-container>
+       <md-checkbox ng-model="newinput.required">
+       Required    
+      </md-checkbox>
+    </md-input-container>
+
+
+ <!--    <md-input-container>
+     <label>Number</label>
+     <input type="text" name="pattern_input" ng-model="newinput.pattern">
+    </md-input-container> -->
+
+
+</div>
+
+
+<div layout="column" flex flex-gt-xs="40">
+
+   <md-input-container>
+   <label>Pattern</label>
+   <input type="text" name="pattern_input" ng-model="newinput.pattern">
+  </md-input-container>
+
+
+</div>
+
+
+
+
 
 </md-content>
 </md-tab>
@@ -340,10 +408,25 @@ NONE
 
 </md-content>
 </md-tab>
- -->
+-->
 
 
 </md-tabs>
 
 </md-dialog-content>
+
+<md-dialog-actions layout="row" layout-align="center center">
+
+
+
+        <md-button type="submit" ng-click="addInput(newinput,isUpdate)" class="md-raised md-primary">
+        {{isUpdate ? 'Update' : 'Add'}}
+        </md-button>
+        
+
+</md-dialog-actions>
+
+
+
+
 </md-dialog>

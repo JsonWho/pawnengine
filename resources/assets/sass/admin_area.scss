@@ -16,17 +16,21 @@
 }
 
 .section {
+
 	border: 1px solid blue;
-	padding: 2.8%;
-	padding-top: 0px;
-	padding-bottom: 0px;
+	padding: 0px;
+
+	& > div {
+
+		padding: 2.8%;
+
+	}
 
 	& > h5 {
 		background: #afdaff;
-		padding: 3px;
-		margin-left: -2.9%;
-		margin-right: -2.9%;
 		margin-top:0px;
+		width:100%;
+		text-align:center;
 	}
 
 	& > .md-button {
@@ -34,7 +38,7 @@
 	}
 
 
-		& > .container > recon > .container {
+		& > .containe > recon > .container {
 
 		@media (min-width: 600px)  {
 	    -webkit-box-flex: 1;
@@ -72,11 +76,48 @@ form .small_buttons .md-button, .md-button.small_button {
 	border-left: 1px solid green;
 	border-bottom: 1px solid green;
 
+	& > div {
+		
+		.del_container, .edit_container {
+
+			visibility:hidden;
+		}
+
+	}
+
+	&:hover > div {
+		
+		.del_container, .edit_container {
+
+			visibility:visible;
+		}
+
+	}
+
+	@media (max-width: 600px)  {
+
+		& + .container {
+			 margin-top: 20px;
+		}
+
+	}
+
+
 
 
 	.cinput {
 
 		position:relative;
+
+		.input_title {
+
+			margin-top: 10px;
+			margin-bottom: 15px;
+			font-size: 16px;
+			display:block;
+			font-weight: bold;
+			color: #828282;
+		}
 
 		.edit_button, .del_button {
 			cursor:pointer;

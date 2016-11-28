@@ -36,9 +36,40 @@ angular.element(document).ready(function() {
 	angular.bootstrap(document, [ApplicationConfiguration.applicationModuleName]);
 
 });
-ApplicationConfiguration.registerModule('home');
 ApplicationConfiguration.registerModule('header');
+ApplicationConfiguration.registerModule('home');
 ApplicationConfiguration.registerModule('template_editor');
+
+'use strict';
+
+angular.module('header').controller('headerController',['$scope','$http', function($scope, $http) {
+
+var vm = this;
+
+}]);
+
+'use strict';
+
+angular.module('pawnengine_admin').controller('rootController',['$scope','$http','$mdDialog', function($scope, $http, $mdDialog) {
+
+var vm = this;
+
+  $scope.showConfirm = function(ev, title) {
+    // Appending dialog to document.body to cover sidenav in docs app
+    var confirm = $mdDialog.confirm()
+          .title(title)
+          .ariaLabel('Delete Input')
+          .targetEvent(ev)
+          .ok('OK')
+          .cancel('Cancel');
+
+    return $mdDialog.show(confirm);
+
+}
+
+
+
+}]);
 
 angular.module('home').config(function($stateProvider, $urlRouterProvider, $httpProvider) {
 
@@ -92,6 +123,19 @@ angular.module('template_editor').config(function($stateProvider, $urlRouterProv
 'use strict';
 
 
+var UUID = (function() {
+	var self = {};
+	var lut = []; for (var i=0; i<256; i++) { lut[i] = (i<16?'0':'')+(i).toString(16); }
+	self.generate = function() {
+
+		var d0 = Math.random()*0xffffffff|0;
+
+		return lut[d0&0xff]+lut[d0>>8&0xff]+lut[d0>>16&0xff]+lut[d0>>24&0xff];
+	}
+
+	return self;
+
+})();
 
 angular.module('template_editor').controller('templateEditorController',['$scope','$http','$state', '$mdDialog', function($scope, $http, $state, $mdDialog) {
 
@@ -107,6 +151,7 @@ vm.sectionActive = function(count) {
 
 	return count == vm.active_section;
 }
+
 
 
 vm.showTipDialog = function(ev,tip) {
@@ -138,6 +183,23 @@ vm.addEditInput = function(ev, cc, input) {
     });
 }
 
+
+
+vm.addEditContainer = function(ev, con, pcon) {
+
+	$mdDialog.show({
+      controller: containerDialogController,
+      templateUrl: 'admin/add_edit_container.tmp.html',
+      parent: angular.element(document.body),
+      targetEvent: ev,
+      locals: {container: con, pcon: pcon},
+      clickOutsideToClose:true,
+      fullscreen: false // Only for -xs, -sm breakpoints.
+    });
+}
+
+
+
 vm.delInput = function($event, cc, $index) {
 
 	var promise = $scope.showConfirm($event, 'Delete this input ?');
@@ -145,6 +207,20 @@ vm.delInput = function($event, cc, $index) {
 	promise.then(function() {
 
 			cc.inputs.splice($index,1);
+
+
+	}, function() {});
+
+}
+
+
+vm.del_container = function($event, $index, pcon) {
+
+	var promise = $scope.showConfirm($event, 'Delete this container and its contents ?');
+
+	promise.then(function() {
+
+			pcon.child_containers.splice($index,1);
 
 
 	}, function() {});
@@ -190,6 +266,41 @@ $scope.prevSection = function() {
 
 }
 
+vm.createDateObject = function(inp) {
+
+	if(!inp.value) { inp.value = new Date(); return; }
+	inp.value = new Date(inp.value);
+}
+
+
+vm.returnPattern = function(pattern) {
+
+
+}
+
+
+
+// function getPositionString(ploc) {
+
+// 			return ploc + '-' + $index;
+// 		}
+
+vm.set_con_pos = function(con, $index, pcon, $sindex ) {
+
+		var form = vm.tForm;
+		var ploc = '';
+
+		
+		if(pcon && !pcon.count) { ploc = form['condata_'+pcon.id].position; }
+
+		form['condata_'+con.id] = {
+
+			position:  (function() { return ploc ? ( ploc + $index + '-') : ($sindex + '-' + $index + '-' ); })(),
+
+		}
+
+}
+
 
 
  vm.template = {
@@ -207,11 +318,13 @@ $scope.prevSection = function() {
 			containers: [
 			{
 				id:0,
+				position: 1,
 				title: 'Condition',
 				child_containers: [
 
 					{
 						id: 1,
+						position: 1,
 						title: 'Is your item new or used ?',
 						inputs:[
 
@@ -219,13 +332,18 @@ $scope.prevSection = function() {
 							
 
 									{
-										id:0, type:'radiogroup', text:'select an option', errormsg: '{required:"this input is required"}',  group:'itemcon', value: null, required: true, tip: { label:'Do you need help ?', heading: 'MaBook Serial location', text: 'The serial can be found on the underside of the notebook.', image:'someimage.png' },
+										id:0, type:'radiogroup', text:'select an option', errormsg: '{required:"this input is required"}',  group:'itemcon', title:'some title for radio', value: null, required: true, tip: { label:'Do you need help ?', heading: 'MaBook Serial location', text: 'The serial can be found on the underside of the notebook.', image:'someimage.png' },
 										options: [{id:0, text:'item is new', value: 0 }, {id:1, text:'item is used', value: 1}]
 									},
 
+									{
+									id:0, type:'date', errormsg: '{required:"this input is required"}', title:'Select puchase data', value: null, required: true, tip: { label:'Do you need help ?', heading: 'MaBook Serial location', text: 'The serial can be found on the underside of the notebook.', image:'someimage.png' }
+																			},
+
+
 
 									{
-										id:1, type:'text', text:'select an option',  group: null, value: null, placeholder:'put some text here',required: true, tip: { label:'Do you need help ?', heading: 'MaBook Serial location', text: 'The serial can be found on the underside of the notebook.', image:'someimage.png' }
+										id:1, type:'text', pattern:  /^(\d)+$/ ,  group: null, value: null, placeholder:'put some text heree', attributes:[{attr:'required', value: 'true'},{attr:'number', value: ''}], tip: { label:'Do you need help ?', heading: 'MaBook Serial location', text: 'The serial can be found on the underside of the notebook.', image:'someimage.png' }
 										
 									},
 
@@ -243,7 +361,7 @@ $scope.prevSection = function() {
 	
 						],
 
-						child_containers: [{id:77,title:'sub-sub-sub', inputs: [{id:95, type:'checkbox', text:'subby checkbox', value: null, required: true}]  }]
+						child_containers: [{id:77,title:'sub-sub-sub', position: 2, inputs: [{id:95, type:'checkbox', text:'subby checkbox', value: null, required: true}]  }]
 
 					},
 
@@ -253,6 +371,7 @@ $scope.prevSection = function() {
 					{
 						id: 2,
 						title: 'Rate the condition',
+						position: 2,
 						conditions: { 
 
 										target_input_conditions: 
@@ -316,10 +435,12 @@ $scope.prevSection = function() {
 
        					{
 						id: 3,
+						position: 1,
 
 
 					  child_containers: [{
 						id: 4,
+						position: 1,
 						title: '3rd container',
 						conditions: { target_input_conditions: 
 										[ 
@@ -402,6 +523,8 @@ $scope.prevSection = function() {
 	//cc - current container
 	//co - conditin object
 
+	if(!cc) return;
+
 	if(!cc.conditions) return true;
 
 		var coArr = cc.conditions.target_input_conditions;
@@ -447,12 +570,17 @@ $scope.prevSection = function() {
 		// co.targetInput = co.targetInput ? co.targetInput : vm.tForm[co.input_name];
 		co.targetInput = vm.tForm[co.input_name];
 
+		if(!co.targetInput) continue;
+
 		//if the 'controller' input is disabled, check if its parent container is hidden. If hidden, this sets displayContainer to false, even if this condition only has 'disable' specified.
 		//when 
 		if(co.targetInput.$inputDisabled) { 
 
 			var cIdentifier =  'container_'+co.container_id+'_show';
-			if(vm.tForm[cIdentifier] !== undefined && vm.tForm[cIdentifier] == false) {displayContainer = false;}
+			if(vm.tForm[cIdentifier] !== undefined && vm.tForm[cIdentifier] == false) {
+				
+				displayContainer = false;
+			}
 			else { displayContainer = setDisplayContainer(displayContainer, co.behavior); }
 
 			falseCount++; continue; 
@@ -604,12 +732,67 @@ $scope.prevSection = function() {
 		    }
 
 
+		function containerDialogController($scope, $mdDialog, container, pcon) { 
+
+			 $scope.container = container;
+
+			 $scope.cancel = function() {
+		     $mdDialog.cancel();
+		    };
+
+
+		      $scope.initTemplate = function() {
+
+			  	         if(container && !$scope.con_temp) {
+	  	      				
+	  	      				$scope.max_position = pcon.child_containers.length;
+			  	         	$scope.con_temp  = angular.copy(container);
+			  	         	$scope.isUpdate = true;
+
+			  	         } else if(!$scope.con_temp) {
+
+			  	         			var position = pcon.child_containers.length + 1;
+			  	         			$scope.max_position = position;
+			  	         			$scope.total_containers = $scope.total_containers + 1;
+
+					  	         	$scope.con_temp = { 
+					  	         			title: 'New Container' ,
+					  	         			position: position
+
+					  	         };
+
+			  	          }
+		  	          }
+
+
+		  $scope.initTemplate();
+  	        
+
+
+
+
+		    $scope.changePosition = function(con_temp) {
+
+
+		    	var position = con_temp.position - 1;
+
+		    	if(con_temp && position <= pcon.child_containers.length) {
+
+					    pcon.child_containers.splice((con_temp.position - 1), 1);
+					    pcon.child_containers.splice(position, 0, con_temp);
+					    pcon.position = (position + 1);
+		    	}
+		    }
+}
+
+
+
 
   	    function addInputDialogController($scope, $mdDialog, container, input) {
 
   	        $scope.container = container;
 
-	  		$scope.input_types = [{name:'radiogroup', dname: 'radio group'},{name:'checkbox', dname: 'Checkbox'},{name:'text', dname: 'Text'} ,{name:'select', dname: 'Select list'},{ name:'multiselect', dname: 'Muli-Select list'}];
+	  		$scope.input_types = [{name:'radiogroup', dname: 'radio group'},{name:'checkbox', dname: 'Checkbox'},{name:'text', dname: 'Text'} ,{name:'select', dname: 'Select list'},{ name:'multiselect', dname: 'Muli-Select list'},{ name:'date', dname: 'Date'}];
 
 
   	        $scope.initTemplate = function() {
@@ -695,6 +878,21 @@ $scope.prevSection = function() {
 				    	    // }
 
 
+				    	    if(newinput.pattern) { 
+
+
+				    	    	// newinput.pattern = new RegExp(escapeStringRegExp(newinput.pattern.toString())); 
+
+				    	    	var inputstring = newinput.pattern.toString();
+				    	    	var flags = inputstring.replace(/.*\/([gimy]*)$/, '$1');
+								var pattern = inputstring.replace(new RegExp('^/(.*?)/'+flags+'$'), '$1');
+								var regex = new RegExp(pattern, flags);
+
+								newinput.pattern = regex;
+
+				    	    }
+
+
 					    	if(!inputs_with_options.includes(input_type)) {
 
 					    		delete newinput.options;
@@ -744,45 +942,55 @@ $scope.prevSection = function() {
 
 		    	var copy = angular.copy($scope.active_option);
 
-		    	copy.value = 'x' + Math.random(3,222);
+		    	copy.uid = UUID;
 
 		    	$scope.newinput.options.push(copy);
 		    	$scope.active_option = {};
 		    	$scope.selectedOption = {};
 
 		    	if($scope.newinput.type == 'select') {
-		    	$scope.newinput.value = copy.value;
+
+			    	$scope.newinput.value = copy.uid;
+
 		    	}
 
 		    	else if($scope.newinput.type == 'multiselect') {
-		    	$scope.current_value = copy.value;
+
+			    	$scope.current_value = copy.uid;
+
 		    	}
 
 
 
-		    	$scope.setOption(copy.value);
+		    	$scope.setOption(copy.uid);
 		    }
 
 
 		    //for select list to display mark or style for select option
-		    $scope.checkIfSelected = function(val) {
-		    	if(!val) return false;
-		    	return $scope.newinput.value.includes(val);
+		    $scope.checkIfSelected = function(opt) {
+		    	if(!opt) return false;
+
+		    	var query = opt.uid || opt.id;
+		    	return $scope.newinput.value.includes(query);
 		    }
 
 		    //toggle checkbox and remove or add value in value array
 		    $scope.toggleSelected = function(optionSelected) {
 
+
+		    var value = $scope.selectedOption.uid || $scope.selectedOption.id;
+
+
 		    if(optionSelected) {
 
-		    	$scope.newinput.value.push($scope.selectedOption.value);
+		    	$scope.newinput.value.push(value);
 		    	// $scope.optionSelected = true;
 
 		    }	else {
 
 		    	  $scope.newinput.value = $scope.newinput.value.filter(function(itm, idx) {
 
-		    	  return itm !== $scope.selectedOption.value; 
+		    	  return itm !== value; 
 
 		    	});
 
@@ -809,12 +1017,14 @@ $scope.prevSection = function() {
 		}
 
 
-		    $scope.setOption = function(val) {
+		    $scope.setOption = function(op) {
 
-		    	if(!val) return;
+		    	if(!op) return;
 
+		    	var query = op.uid || op.id;
 		    	var option = $scope.newinput.options.find(function(opt) {
-		    		return opt.value == val;
+		    		var id = opt.uid || opt.id;
+		    		return id == query;
 		    	});
 
 		    	$scope.active_option = angular.copy(option);
@@ -891,50 +1101,50 @@ $scope.prevSection = function() {
 
 
 
+
 // '<div class="container" flex-gt-xs="50" ng-repeat="cc in con.child_containers" ng-show="!cc.conditions ? true : checkEquality(cc)"> <h5>{{cc.title}}</h5> <div class="cinput" ng-repeat="inp in cc.inputs track by $index " style="width:100%"> <div class="position">{{inp.position=$index+1}}</div> <div class="edit_button" ng-click="tmp.addEditInput($event, cc, inp)">edit</div> <div class="del_button" ng-click="tmp.delInput($event, cc, $index)">del</div> <md-input-container ng-if="inp.type == \'text\'"> <input ng-init="input_name = (inp.type + \'_\' + inp.id); inputs.push(input_name)" name="{{input_name}}" ng-required="inp.disabled ? '' : inp.required " ng-disabled="inp.disabled" type="text" ng-model="inp.value" placeholder="{{inp.placeholder}}"/> </md-input-container> <md-checkbox ng-init="input_name = (inp.type + \'_\' + inp.id); inputs.push(input_name);" name="{{input_name}}" ng-required="inp.disabled ? '' : inp.required " ng-model="inp.value"     ng-true-value="\'true\'"ng-disabled="inp.disabled" ng-if="inp.type == \'checkbox\'" aria-label="{{inp.text}}"> {{ inp.text }} </md-checkbox> <md-radio-group ng-init="input_name = (inp.type + \'_\' + inp.id); inputs.push(input_name)" name="{{input_name}}" ng-required="inp.disabled ? '' : inp.required "  ng-disabled="inp.disabled" ng-model="inp.value" ng-if="inp.type == \'radiogroup\'"> <md-radio-button ng-repeat="opt in inp.options" value="{{opt.value}}" class="md-primary">{{opt.text}}</md-radio-button> </md-radio-group> <md-input-container ng-if="inp.type == \'select\'"> <md-select placeholder="{{inp.placeholder}}" ng-init="input_name = (inp.type + \'_\' + inp.id); inputs.push(input_name)" name="{{input_name}}" ng-required="inp.disabled ? '' : inp.required "  ng-disabled="inp.disabled" ng-model="inp.value"> <md-option ng-repeat="opt in inp.options" ng-value="opt.value"> {{opt.text}} </md-option> </md-select> </md-input-container> <md-input-container style="max-width:100%" ng-if="inp.type == \'multiselect\'"> <label>{{inp.text}}</label> <md-select ng-disabled="inp.disabled" ng-init="input_name = (inp.type + \'_\' + inp.id); inputs.push(input_name)" name="{{input_name}}" ng-required="inp.disabled ? '' : inp.required "  ng-model="inp.value"multiple> <md-optgroup label="stuff"> <md-option ng-value="opt.value" ng-repeat="opt in inp.options">{{opt.text}}</md-option> </md-optgroup> </md-select> </md-input-container> <div class="tip" ng-if="inp.tip"> <label>Help:</label> <a ng-click="tmp.showTipDialog($event,inp.tip)">{{inp.tip.label}}</a> </div> </div> <md-button ng-click="tmp.addEditInput($event,cc)">+ input</md-button> <md-button>+ container</md-button></div>'
 
 }]).directive('recon',   function recursive_container() {
     return {
-      template: '<div class="container" ng-repeat="cc in containers" ng-show="!cc.conditions ? true : tmp.checkEquality(cc)"> <h5>{{cc.title}}</h5> <div class="cinput" ng-repeat="inp in cc.inputs" style="width:100%"> <div class="position">{{inp.position=$index+1}}</div> <div class="edit_button" ng-click="tmp.addEditInput($event, cc, inp)">edit</div> <div class="del_button" ng-click="tmp.delInput($event, cc, $index)">del</div> <md-input-container ng-if="inp.type == \'text\'"> <input ng-init="input_name = (inp.type + \'_\' + inp.id); inputs.push(input_name)" name="{{input_name}}" ng-required="inp.disabled ? \'\' : inp.required " ng-disabled="inp.disabled" type="text" ng-model="inp.value" placeholder="{{inp.placeholder}}"/> </md-input-container> <md-checkbox ng-init="input_name = (inp.type + \'_\' + inp.id); inputs.push(input_name);" name="{{input_name}}" ng-required="inp.disabled ? \'\' : inp.required " ng-model="inp.value"     ng-true-value="\'true\'"ng-disabled="inp.disabled" ng-if="inp.type == \'checkbox\'" aria-label="{{inp.text}}"> {{ inp.text }} </md-checkbox> <md-radio-group ng-init="input_name = (inp.type + \'_\' + inp.id); inputs.push(input_name)" name="{{input_name}}" ng-required="inp.disabled ? \'\' : inp.required "  ng-disabled="inp.disabled" ng-model="inp.value" ng-if="inp.type == \'radiogroup\'"> <md-radio-button ng-repeat="opt in inp.options" value="{{opt.value}}" class="md-primary">{{opt.text}}</md-radio-button> </md-radio-group> <md-input-container ng-if="inp.type == \'select\'"> <md-select placeholder="{{inp.placeholder}}" ng-init="input_name = (inp.type + \'_\' + inp.id); inputs.push(input_name)" name="{{input_name}}" ng-required="inp.disabled ? \'\' : inp.required "  ng-disabled="inp.disabled" ng-model="inp.value"> <md-option ng-repeat="opt in inp.options" ng-value="opt.value"> {{opt.text}} </md-option> </md-select> </md-input-container> <md-input-container style="max-width:100%" ng-if="inp.type == \'multiselect\'"> <label>{{inp.text}}</label> <md-select ng-disabled="inp.disabled" ng-init="input_name = (inp.type + \'_\' + inp.id); inputs.push(input_name)" name="{{input_name}}" ng-required="inp.disabled ? \'\' : inp.required "  ng-model="inp.value"multiple> <md-optgroup label="stuff"> <md-option ng-value="opt.value" ng-repeat="opt in inp.options">{{opt.text}}</md-option> </md-optgroup> </md-select> </md-input-container> <div class="tip" ng-if="inp.tip"> <label>Help:</label> <a ng-click="tmp.showTipDialog($event,inp.tip)">{{inp.tip.label}}</a> </div> </div> <md-button ng-click="tmp.addEditInput($event,cc)">+ input</md-button> <md-button>+ container</md-button><recon ctrl="tmp" inputs="inputs" containers="cc.child_containers"></recon></div>',
+    	templateUrl:'admin/input_template.tmp.html',
       scope: {
         containers: '=',
+        pcon: '=',
         tmp: '=ctrl',
+        sindex: '=',
         inputs: '=inputs'
       }
     }
-  });
+  })
+
+// .directive('dynAttr',[ '$compile', function($compile) {
+//     return {
+//         scope: { list: '=dynAttr' },
+//         link: function(scope, elem, attrs){
+//             for(var attr in scope.list){
+//                 elem.attr(scope.list[attr].attr, scope.list[attr].value);   
+//             }
+
+//             scope.$apply();
+//             //console.log(scope.list);           
+//         }
+//     };
+// }]);
+
+// .directive('ngLoading', function($compile) {
+//   return function(scope, element, attrs) {
+//     scope.$watch(attrs.ngLoading, function(isLoading) {
+       
+//          element.attr('disabled',false);
+//          element.attr('ng-pattern','/^[0-9]+$/');
 
 
+// // element.removeAttr('ng-loading');
+// // $compile(element)(scope);
+        
+//     });
+//   };
+// });
 
-'use strict';
-
-angular.module('header').controller('headerController',['$scope','$http', function($scope, $http) {
-
-var vm = this;
-
-}]);
-
-'use strict';
-
-angular.module('pawnengine_admin').controller('rootController',['$scope','$http','$mdDialog', function($scope, $http, $mdDialog) {
-
-var vm = this;
-
-  $scope.showConfirm = function(ev, title) {
-    // Appending dialog to document.body to cover sidenav in docs app
-    var confirm = $mdDialog.confirm()
-          .title(title)
-          .ariaLabel('Delete Input')
-          .targetEvent(ev)
-          .ok('OK')
-          .cancel('Cancel');
-
-    return $mdDialog.show(confirm);
-
-}
-
-
-
-}]);
 
 //# sourceMappingURL=admin_area.js.map
