@@ -36,6 +36,7 @@ elixir(function(mix) {
 	.copy('./node_modules/angular-ui-router/release/angular-ui-router.js', 'resources/assets/js/libs/')
 	.copy('./node_modules/angular-animate/angular-animate.js', 'resources/assets/js/libs/')
 	.copy('./node_modules/angular-messages/angular-messages.js', 'resources/assets/js/libs/')
+	.copy('./node_modules/angular-sanitize/angular-sanitize.min.js', 'resources/assets/js/libs/')
 	.copy('./node_modules/angular-aria/angular-aria.js', 'resources/assets/js/libs/');
 
 

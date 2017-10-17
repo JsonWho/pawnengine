@@ -3,17 +3,17 @@
 var ApplicationConfiguration = (function() {
 
 var ApplicationModuleName = 'pawnengine_admin';
-var ApplicationModuleDependencies = ['ngMaterial','ui.router'];
+var ApplicationModuleDependencies = ['ngMaterial','ui.router','ngMessages'];
 
 var registerModule = function(moduleName, moduleDependencies) {
 
   angular.module(moduleName, moduleDependencies || []);
 
   angular.module(ApplicationModuleName).requires.push(moduleName);
-}
+} 
 
 
-  return {
+  return { 
 
     applicationModuleName : ApplicationModuleName,
     applicationModuleDependencies : ApplicationModuleDependencies,
@@ -23,6 +23,6 @@ var registerModule = function(moduleName, moduleDependencies) {
 
 })();
 
+ 
 
-
-
+ 

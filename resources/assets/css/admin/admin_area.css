@@ -7,6 +7,9 @@
   min-width: 56px;
   line-height: 25px; }
 
+.center_text {
+  text-align: center; }
+
 .section {
   border: 1px solid blue;
   padding: 0px; }
@@ -17,16 +20,6 @@
     margin-top: 0px;
     width: 100%;
     text-align: center; }
-  @media (min-width: 600px) {
-    .section > .containe > recon > .container {
-      -webkit-box-flex: 1;
-      flex: 1 1 50%;
-      max-width: 48.5%;
-      max-height: 50%;
-      box-sizing: border-box; } }
-
-recon {
-  width: 100%; }
 
 form .small_buttons .md-button, .md-button.small_button {
   min-width: 38px;
@@ -36,7 +29,10 @@ form .small_buttons .md-button, .md-button.small_button {
 
 .container {
   border-left: 1px solid green;
-  border-bottom: 1px solid green; }
+  border-bottom: 1px solid green;
+  float: left;
+  max-width: 680px;
+  width: 100%; }
   .container > div .del_container, .container > div .edit_container {
     visibility: hidden; }
   .container:hover > div .del_container, .container:hover > div .edit_container {
@@ -46,13 +42,29 @@ form .small_buttons .md-button, .md-button.small_button {
       margin-top: 20px; } }
   .container .cinput {
     position: relative; }
+    .container .cinput {
+      border: 1px solid transparent;
+      min-width: 180px;
+      max-width: 270px;
+      float: left;
+      min-height: 180px;
+      width: 100%;
+      margin-right: 15px; }
+    .container .cinput:nth-child(even) {
+      margin-right: 0px; }
+    .container .cinput:nth-child(odd) {
+      clear: left; }
+    .container .cinput:hover {
+      border: 1px solid #ebebeb; }
     .container .cinput .input_title {
       margin-top: 10px;
       margin-bottom: 15px;
       font-size: 16px;
       display: block;
       font-weight: bold;
-      color: #828282; }
+      color: #828282;
+      height: 18px;
+      width: 100%; }
     .container .cinput .edit_button, .container .cinput .del_button {
       cursor: pointer;
       visibility: hidden;
@@ -61,6 +73,8 @@ form .small_buttons .md-button, .md-button.small_button {
       position: absolute; }
     .container .cinput .del_button {
       bottom: 0px; }
+    .container .cinput .edit_button {
+      top: 0px; }
     .container .cinput:hover .edit_button, .container .cinput:hover .del_button {
       visibility: visible; }
       .container .cinput:hover .edit_button:hover, .container .cinput:hover .del_button:hover {
@@ -71,18 +85,10 @@ form .small_buttons .md-button, .md-button.small_button {
       left: -13px;
       font-size: 12px;
       color: #828181; }
-  .container .container {
-    border-left: 1px solid purple;
-    border-bottom: 1px solid purple;
-    margin-left: 5px;
-    margin-bottom: 3%;
-    padding-left: 5px; }
-  .container .cinput {
-    border: 1px solid transparent; }
-    .container .cinput:hover {
-      border: 1px solid #ebebeb; }
+  .container .add_input_button {
+    float: right;
+    clear: left; }
   .container .tip {
-    margin-left: 8px;
     font-size: 11px;
     padding-bottom: 10px; }
     .container .tip label {
@@ -90,7 +96,8 @@ form .small_buttons .md-button, .md-button.small_button {
     .container .tip a {
       z-index: 1000; }
     .container .tip:hover {
-      cursor: pointer; }
+      cursor: pointer;
+      color: blue; }
   .container md-radio-group + .tip {
     padding-bottom: 20px; }
   .container md-input-container + .tip {

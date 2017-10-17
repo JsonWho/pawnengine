@@ -37,8 +37,13 @@ X
 <md-tab label="General">
 <md-content class="md-padding" layout="column">
 
+<div style="height:30px" layout="row" layout-align="center center">
+<div ng-if="conflict_message" style="text-align:center">
+<span class="md-body-1"><b style="color:red">Condition conflict: </b> {{conflict_message}}</span>
+</div>
+</div>
 
-<div layout="row" layout-align="space-around start">
+<div layout="column" layout-align="space-around start">
 
 <!--  <md-input-container flex="80">
  <label>Input type</label>
@@ -51,10 +56,17 @@ X
  -->
 <md-input-container flex="20">
 <label>Position</label>
-<input flex type="number" min="1" max="{{max_position}}" ng-change="changePosition(con_temp)" ng-model="con_temp.position" aria-label="red" aria-controls="red-slider">
+<input flex type="number" min="1" max="{{section.containers.length}}" ng-change="changePosition(con_temp,callBackFunc)" ng-model="con_temp.position" aria-label="red" aria-controls="red-slider">
 </md-input-container>
-
 </div>
+
+
+
+
+<md-input-container flex="70">
+<label>Name</label>
+<input ng-model="con_temp.title" aria-label="conname" >
+</md-input-container>
 
 
 
@@ -71,7 +83,235 @@ X
 <md-tab label="Conditions">
 <md-content class="md-padding">
 
-<h1>Conditions</h1>
+
+<!-- start conditions list -->
+<div ng-show="!temp_cond" layout="column" flex="100" layout-align="start">
+  
+  <div layout="row" flex="100" layout-align="space-around center" ng-repeat="con in con_temp.conditions.target_input_conditions track by con.input_id">
+    
+    <div flex="40">{{con.input_type}}</div>
+    <div flex="30">{{con.input_value_check_rule}}</div>
+    <div flex="15" class="center_text" ng-click="edit_condition(con)">Edit</div>
+    <div flex="15" class="center_text">Del</div>
+
+</div>
+
+<md-dialog-actions layout="row" layout-align="center center">
+
+
+       <md-button type="submit" flex="20" ng-click="new_condition()" class="md-raised">
+         New        
+        </md-button>
+
+</md-dialog-actions>
+
+</div>
+<!-- end conditions list -->
+
+
+<div ng-if="temp_cond">
+
+<a ng-click="clear_edit_objects()">Back</a>
+
+<div layout="column" layout-align="start center">
+
+<md-input-container flex="70" flex-xs="80">
+    <md-select ng-change="getValidContainers(selected_section)" placeholder="Select section" ng-model="selected_section">
+      <md-option ng-value="section" ng-repeat="section in valid_sections">
+      {{ section.count +'. '+ section.title }}
+      </md-option>
+    </md-select>
+</md-input-container>
+
+
+   <md-input-container flex="70" flex-xs="80">
+    <md-select md-on-close="getValidInputs(selected_container)" ng-disabled="selected_section ? false : true" placeholder="Select container" ng-model="selected_container">
+      <md-option ng-value="con" ng-repeat="con in valid_containers">
+      {{ con.position +'. '+ con.title }}
+    </md-option>
+     </md-select>
+   </md-input-container>
+
+   <md-input-container flex="70" flex-xs="80">
+    <md-select ng-change="temp_cond = {}" ng-disabled="selected_container ? false : true" placeholder="Select input" ng-model="selected_input">
+      <md-option ng-value="inp" ng-repeat="inp in selected_container.inputs">
+      {{ inp.position +'. '+ inp.title }}
+    </md-option>
+     </md-select>
+   </md-input-container>
+
+
+
+</div>
+
+
+<div ng-if="selected_input" class="md-body-1">
+<span>Type: </span><span>{{selected_input.type}}</span>
+</div>
+
+
+<!-- checkbox -->
+<div ng-if="selected_input && selected_input.type == 'checkbox' " layout="column" layout-align="center-center">
+
+
+<!--    <md-button ng-click="set_checkbox_test_value">{{ temp_cond.test_value == true ? 'Enable', 'Disable' }}</md-button>
+ -->
+
+        <label>Checkbox 'TRUE' check:</label>
+
+<md-input-container>
+
+        <md-checkbox ng-model="temp_cond.test_value"  aria-label="checkbox test value">
+        {{ temp_cond.test_value ? 'Enabled' : 'Disabled' }}
+        </md-checkbox>
+</md-input-container>
+
+
+</div>
+
+<!-- text -->
+
+<div ng-if="selected_input && selected_input.type == 'text' " layout="row" layout-align="space-around">
+
+
+      <!-- input must equal to this string value -->
+      <md-input-container>
+        <label>Equal to:</label>
+        <input ng-model="temp_cond.test_value" ng-disabled="not_empty_checkbox" ng-change="setRule('equals')">
+      </md-input-container>
+
+
+      <!-- input must contain any valid value -->
+      <md-input-container>
+      <md-checkbox ng-disabled="temp_cond.test_value && temp_cond.test_value !== '*' " ng-model="not_empty_checkbox" ng-change="setRule('equals'); setTestValue('*', not_empty_checkbox)" aria-label="input must have valid value">
+            Not empty
+      </md-checkbox>
+      </md-input-container>
+
+</div>
+
+<!--multiselect-->
+<div ng-if="selected_input && selected_input.type == 'multiselect' " layout="column">
+
+<div layout="row" layout-align="space-around">
+      <!-- multiselect, select option(s) that will be assesed against criteria -->
+      <md-input-container flex="60">
+        <label>Options</label>
+        <md-select ng-model="temp_cond.test_array" multiple>
+          <md-optgroup label="options">
+            <md-option ng-value="opt.id" ng-repeat="opt in selected_input.options">{{opt.text}}</md-option>
+          </md-optgroup>
+        </md-select>
+      </md-input-container>
+
+
+<!-- any n-number selected -->
+
+<!-- any n-number in test array selected () , (all or more checkbox) -->
+
+
+
+<!-- If populated at least n number has to be selected in order to satisfy condition, otherwise all must be selected if test_array is populated, if test_array is not populated, then any single one.
+ -->      
+
+ <md-input-container flex="20">
+        <label>At least:</label>
+        <input ng-model="temp_cond.atleast_n" min="1" max="{{ temp_cond.test_array.length ? temp_cond.test_array.length : selected_input.options.length }}" type="number">
+ </md-input-container>
+
+</div>
+
+
+<!-- checkbox - All must be selected status checkbox, always disabled. True if condition is not any_n
+ -->      
+
+ 
+<div layout="row" layout-align="space-around start">
+
+
+  <md-input-container>
+        <md-checkbox ng-disabled="true" ng-checked="!temp_cond.atleast_n"  aria-label="All must be selected">
+        All must be selected
+        </md-checkbox>
+</md-input-container>
+
+
+  <md-input-container>
+        <md-checkbox ng-disabled="allowNotInArrayCheckBoxState()" ng-model="temp_cond.allow_notinarray"  aria-label="Selecting values not in array does not invalidate condition">
+        Allow unselected values
+        </md-checkbox>
+</md-input-container>
+
+
+</div>
+
+
+
+
+
+
+
+<!--  <md-input-container>
+        <md-checkbox ng-disabled="!temp.condition.count && temp.condition.test_array > 0 " ng-model="not_empty_checkbox" ng-change="setRule('equals'); setTestValue('*', not_empty_checkbox)" aria-label="input must have valid value">          
+        </md-checkbox>
+</md-input-container>
+ -->
+
+<!--      checkbox - If test_array popuated, allow selection of options not in test_array, condition will not be ivalid
+ -->
+
+
+
+
+
+</div>
+
+
+<!-- Radio -->
+
+<div ng-if="selected_input && selected_input.type == 'radiogroup' || selected_input.type == 'select' " layout="column">
+
+<div layout="row" layout-align="space-around">
+      <md-input-container flex="60">
+        <label>Options</label>
+        <md-select ng-model="temp_cond.test_array" multiple>
+          <md-optgroup label="options">
+            <md-option ng-value="opt.uid || opt.id" ng-repeat="opt in selected_input.options">{{opt.text}}</md-option>
+          </md-optgroup>
+        </md-select>
+      </md-input-container>
+
+
+</div>
+
+
+<div ng-if="selected_input" class="md-body-1">
+<span>Mode: </span><span ng-if="temp_cond.test_array && temp_cond.test_array.length > 0"><b>Constrained to valid options</b></span>
+<span ng-if="!temp_cond.test_array || temp_cond.test_array.length == 0">Not constrained, any option is valid</span>
+</div>
+
+
+
+</div>
+
+
+
+
+<div layout="row" layout-align="space-around start">
+
+
+
+        <md-button type="submit" ng-click="addCondition(temp_cond)" class="md-raised">
+         {{ current_state == 'edit' ? 'Update' : 'Add' }}
+        </md-button>
+
+
+</div>
+</div>
+
+<!-- 
+add elements for all must be equal or at least n number which specifies rules for assesing result of all conditions check
+ -->
 
 </md-content>
 </md-tab>

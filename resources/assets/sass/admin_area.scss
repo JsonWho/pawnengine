@@ -15,6 +15,11 @@
 	line-height: 25px;
 }
 
+.center_text {
+	
+	text-align: center;
+}
+
 .section {
 
 	border: 1px solid blue;
@@ -37,28 +42,8 @@
 	 @extend %template_button_syle;
 	}
 
-
-		& > .containe > recon > .container {
-
-		@media (min-width: 600px)  {
-	    -webkit-box-flex: 1;
-	    flex: 1 1 50%;
-	    max-width: 48.5%;
-	    max-height: 50%;
-	    box-sizing: border-box;
-	    }
-
-
-	}
-
 }
 
-
-recon {
-	
-	width: 100%;
-
-}
 
 
 form .small_buttons .md-button, .md-button.small_button {
@@ -75,6 +60,11 @@ form .small_buttons .md-button, .md-button.small_button {
 
 	border-left: 1px solid green;
 	border-bottom: 1px solid green;
+	float: left;
+    max-width: 680px;
+    width: 100%;
+
+
 
 	& > div {
 		
@@ -109,6 +99,30 @@ form .small_buttons .md-button, .md-button.small_button {
 
 		position:relative;
 
+		& {
+
+			border: 1px solid transparent;
+		    min-width: 180px;
+		    max-width: 270px;
+		    float: left;
+		    min-height: 180px; 
+		    width:100%;
+		    margin-right: 15px;
+	    }
+
+	    &:nth-child(even) {
+	    	margin-right: 0px;
+	    }
+
+	    &:nth-child(odd) {
+	    	clear:left;
+	    }
+
+	    &:hover {
+		border: 1px solid #ebebeb;
+		}
+
+
 		.input_title {
 
 			margin-top: 10px;
@@ -117,6 +131,8 @@ form .small_buttons .md-button, .md-button.small_button {
 			display:block;
 			font-weight: bold;
 			color: #828282;
+			height:18px;
+			width:100%;
 		}
 
 		.edit_button, .del_button {
@@ -129,6 +145,10 @@ form .small_buttons .md-button, .md-button.small_button {
 
 		.del_button {
 			bottom:0px;
+		}
+
+		.edit_button {
+			top: 0px;
 		}
 
 		&:hover {
@@ -157,30 +177,16 @@ form .small_buttons .md-button, .md-button.small_button {
 		@extend %template_button_syle;
 	}
 
-	& .container {
+	.add_input_button {
 
-		border-left: 1px solid purple;
-		border-bottom: 1px solid purple;
-		margin-left: 5px;
-		margin-bottom: 3%;
-		padding-left: 5px;
-
+		float: right;
+	    clear: left;
 	}
 
 
-	.cinput {
-
-	border: 1px solid transparent;
-
-	&:hover {
-		border: 1px solid #ebebeb;
-	}
-
-	}
 
 	.tip {
 
-		margin-left: 8px;
 		font-size: 11px;
 		padding-bottom: 10px;
 
@@ -196,6 +202,7 @@ form .small_buttons .md-button, .md-button.small_button {
 		&:hover {
 
 		cursor: pointer;
+		color: blue;
 
 		}
 	}
